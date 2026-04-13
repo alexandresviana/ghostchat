@@ -47,10 +47,10 @@ export function GhostWipeOverlay({ show, onComplete }: GhostWipeOverlayProps) {
       <div className="ghost-wipe-ghost relative z-10 flex flex-col items-center gap-4 px-6">
         <GhostAvatar size={112} className="ghost-wipe-avatar" />
         <p className="text-center font-[family-name:var(--font-fredoka)] text-lg text-[#f5f0ff] opacity-90">
-          A apagar tudo…
+          Apagando tudo…
         </p>
         <p className="max-w-xs text-center text-xs text-[#c4b0e8]/80">
-          O fantasma está a limpar esta sala. Em instantes não resta nada.
+          O fantasma está limpando esta sala. Em instantes não restará nada.
         </p>
       </div>
     </div>
