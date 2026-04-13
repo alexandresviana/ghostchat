@@ -1,8 +1,8 @@
 # Ghost Chat
 
-**Ghosting? Not here.** App de chat com mensagens persistentes e presença visível.
+Conversas **privadas e efémeras** por link único (Next.js, Bunny Database & Storage).
 
-Documentação completa da stack (Bunny Database, Bunny Edge, WebSockets, MVP): **[GHOSTCHAT.md](./GHOSTCHAT.md)**.
+Documentação da stack: **[GHOSTCHAT.md](./GHOSTCHAT.md)**.
 
 ## Desenvolvimento
 
@@ -12,10 +12,21 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Abra [http://localhost:3000](http://localhost:3000) → **Painel** em [/panel](/panel) para criar sala e link. Health: [/api/health](/api/health).
+Abra [http://localhost:3000](http://localhost:3000) → **Painel** em [/panel](/panel). Health: [/api/health](/api/health).
 
 ## Build
 
 ```bash
 npm run build && npm start
 ```
+
+## Docker
+
+```bash
+docker build -t ghostchat .
+docker run --rm -p 3000:3000 --env-file .env.production ghostchat
+```
+
+Defina as variáveis de ambiente (ver `.env.example`): Bunny DB, storage, Pull Zone, etc.
+
+Repositório: **https://github.com/alexandresviana/ghostchat**
