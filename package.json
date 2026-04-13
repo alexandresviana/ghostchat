@@ -1,17 +1,21 @@
 {
-  "name": "ghostchat-scaffold",
+  "name": "ghostchat",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "backend": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "heic-convert": "^2.1.0",
     "next": "16.2.3",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

@@ -1,26 +1,194 @@
 @import "tailwindcss";
 
+/* Evita scroll horizontal no mobile (100vw, flex, animações com scale, etc.) */
+html {
+  overflow-x: hidden;
+  max-width: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+#ghostchat-shell {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0d0d1a;
+  --foreground: #f5f0ff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-nunito);
+  --font-display: var(--font-fredoka);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes ghost-float {
+  0%,
+  100% {
+    transform: translateY(0);
   }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.ghost-float {
+  animation: ghost-float 3s ease-in-out infinite;
+}
+
+/* Encerrar / expirar: fantasma “apaga” o ecrã (sincronizar com GHOST_WIPE_DURATION_MS) */
+@keyframes ghost-wipe-sweep {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes ghost-wipe-bloom {
+  0% {
+    transform: scale(0.2);
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(6);
+    opacity: 1;
+  }
+}
+
+@keyframes ghost-wipe-avatar {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  55% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(14px);
+    transform: scale(1.35);
+  }
+}
+
+@keyframes ghost-wipe-caption {
+  0%,
+  40% {
+    opacity: 0.95;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.ghost-wipe-sweep {
+  animation: ghost-wipe-sweep 2.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  z-index: 0;
+}
+
+.ghost-wipe-bloom {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ghost-wipe-root {
+  contain: paint;
+  width: 100%;
+  max-width: 100%;
+}
+
+.ghost-wipe-bloom::before {
+  content: "";
+  position: absolute;
+  /* 100vw no mobile costuma ser > largura útil — usar % do contentor */
+  width: min(100%, 520px);
+  height: min(100%, 520px);
+  max-width: 100%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(126 240 200 / 0.55) 0%,
+    rgb(123 94 167 / 0.45) 38%,
+    rgb(13 13 26 / 0.95) 72%
+  );
+  animation: ghost-wipe-bloom 6.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.ghost-wipe-avatar {
+  animation: ghost-wipe-avatar 7.5s ease-in forwards;
+}
+
+.ghost-wipe-ghost p {
+  animation: ghost-wipe-caption 7s ease-out forwards;
+}
+
+@keyframes typing-dot-bounce {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.typing-indicator__dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgb(196 176 232 / 0.95);
+  animation: typing-dot-bounce 1.2s ease-in-out infinite;
+}
+
+.typing-indicator__dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-indicator__dot:nth-child(3) {
+  animation-delay: 0.3s;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  overflow-x: hidden;
+  max-width: 100%;
+  position: relative;
+  overscroll-behavior-x: none;
+}
+
+/* Impressão: não reproduzir o chat no papel (captura por impressora/PDF do browser). */
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  body::after {
+    content: "Impressão desativada para esta página.";
+    visibility: visible !important;
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #1a1a1a;
+    font: 14pt system-ui, sans-serif;
+  }
 }
