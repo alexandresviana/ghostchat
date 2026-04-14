@@ -1,6 +1,6 @@
 /** Pacotes de links (30 dias após pagamento confirmado). Valores em centavos (BRL). */
 
-export type PlanCode = "p10" | "p50" | "unl";
+export type PlanCode = "p1" | "p10" | "p50" | "unl";
 
 export type PlanDefinition = {
   code: PlanCode;
@@ -27,6 +27,12 @@ export const PLANS: PlanDefinition[] = [
     label: "Links ilimitados",
     linksLimit: -1,
     priceCents: 14990,
+  },
+  {
+    code: "p1",
+    label: "1 link (teste)",
+    linksLimit: 1,
+    priceCents: 100,
   },
 ];
 

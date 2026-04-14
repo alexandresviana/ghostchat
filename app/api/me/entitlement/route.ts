@@ -4,7 +4,7 @@ import { verifySessionToken } from "@/lib/entitlement-jwt";
 import { getEntitlementByEmail } from "@/lib/payment-service";
 import { getBearerToken } from "@/lib/request-session";
 import { hasBunnySqlConfig } from "@/lib/env-bunny";
-import { getPlan } from "@/lib/plans";
+import { getPlan, type PlanCode } from "@/lib/plans";
 
 export const runtime = "nodejs";
 
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
     });
   }
 
-  const plan = getPlan(ent.planCode as "p10" | "p50" | "unl");
+  const plan = getPlan(ent.planCode as PlanCode);
   const unlimited = ent.linksLimit === -1;
   const remaining = unlimited
     ? null
