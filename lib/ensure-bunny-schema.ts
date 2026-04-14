@@ -69,6 +69,47 @@ async function applySchemaOnce(db: Client): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_room_typing_room_updated ON room_typing(room_id, updated_at)`,
   );
 
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS pay_charges (
+      id TEXT PRIMARY KEY,
+      correlation_id TEXT UNIQUE NOT NULL,
+      plan_code TEXT NOT NULL,
+      value_cents INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'PENDING',
+      woovi_identifier TEXT,
+      woovi_payment_link_id TEXT,
+      br_code TEXT,
+      customer_name TEXT,
+      customer_email TEXT NOT NULL,
+      customer_phone TEXT,
+      created_at TEXT NOT NULL,
+      paid_at TEXT
+    )
+  `);
+  await db.execute(
+    `CREATE INDEX IF NOT EXISTS idx_pay_charges_email ON pay_charges(customer_email)`,
+  );
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS link_entitlements (
+      customer_email TEXT PRIMARY KEY,
+      plan_code TEXT NOT NULL,
+      links_limit INTEGER NOT NULL,
+      links_used INTEGER NOT NULL DEFAULT 0,
+      window_ends_at TEXT NOT NULL,
+      last_payment_correlation_id TEXT,
+      updated_at TEXT NOT NULL
+    )
+  `);
+
+  try {
+    await db.execute(
+      `ALTER TABLE rooms ADD COLUMN created_by_email TEXT`,
+    );
+  } catch {
+    /* coluna já existe */
+  }
+
   if (!schemaLogged) {
     schemaLogged = true;
     bunnyLog("schema aplicada (rooms, messages, room_typing)");

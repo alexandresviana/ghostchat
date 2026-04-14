@@ -44,7 +44,9 @@ function iso(d: number): string {
   return new Date(d).toISOString();
 }
 
-export async function createRoom(): Promise<RoomDTO> {
+export async function createRoom(options?: {
+  createdByEmail?: string | null;
+}): Promise<RoomDTO> {
   const id = crypto.randomUUID();
   const slug = id;
   const created = Date.now();
@@ -58,12 +60,14 @@ export async function createRoom(): Promise<RoomDTO> {
     endedAt: null,
   };
 
+  const createdBy = options?.createdByEmail?.trim() || null;
+
   if (useSql()) {
     const db = await dbReady();
     const ins = await db.execute({
-      sql: `INSERT INTO rooms (id, slug, created_at, expires_at, ended_at)
-            VALUES (?, ?, ?, ?, NULL)`,
-      args: [id, slug, row.createdAt, row.expiresAt],
+      sql: `INSERT INTO rooms (id, slug, created_at, expires_at, ended_at, created_by_email)
+            VALUES (?, ?, ?, ?, NULL, ?)`,
+      args: [id, slug, row.createdAt, row.expiresAt, createdBy],
     });
     if ((ins.rowsAffected ?? 0) < 1) {
       bunnyLogError("INSERT rooms não afetou linhas", { id });

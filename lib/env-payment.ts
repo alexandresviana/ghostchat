@@ -1,0 +1,26 @@
+import "server-only";
+
+export function getWooviApiUrl(): string {
+  return (
+    process.env.WOOVI_API_URL?.trim() || "https://api.woovi.com"
+  ).replace(/\/$/, "");
+}
+
+export function getWooviAuth(): string | undefined {
+  const a = process.env.WOOVI_AUTH?.trim();
+  return a || undefined;
+}
+
+/** HS256 — obrigatório em produção para JWT de sessão pós-pagamento */
+export function getSessionJwtSecret(): string | undefined {
+  const s = process.env.GHOSTCHAT_SESSION_SECRET?.trim();
+  return s || undefined;
+}
+
+/** Apenas desenvolvimento: permite criar salas sem pagamento */
+export function bypassPayment(): boolean {
+  return (
+    process.env.GHOSTCHAT_BYPASS_PAYMENT === "1" ||
+    process.env.GHOSTCHAT_BYPASS_PAYMENT === "true"
+  );
+}
