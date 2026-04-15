@@ -1,6 +1,6 @@
 /** Pacotes de links (30 dias após pagamento ou ativação). Valores em centavos (BRL). */
 
-export type PlanCode = "free" | "p10" | "p50" | "unl";
+export type PlanCode = "free" | "p5" | "p10" | "p50" | "unl";
 
 export type PlanDefinition = {
   code: PlanCode;
@@ -19,6 +19,12 @@ export const FREE_TEST_PLAN: PlanDefinition = {
 
 /** Planos pagos (PIX) — mostrados no painel. */
 export const PLANS: PlanDefinition[] = [
+  {
+    code: "p5",
+    label: "5 links",
+    linksLimit: 5,
+    priceCents: 990,
+  },
   {
     code: "p10",
     label: "10 links",
