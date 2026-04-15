@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -54,7 +53,6 @@ async function fetchRoomJson<T>(
 }
 
 export function RoomChat({ roomId }: { roomId: string }) {
-  const router = useRouter();
   const [messages, setMessages] = useState<ApiMessage[]>([]);
   const [expiresAtMs, setExpiresAtMs] = useState<number | null>(null);
   const [now, setNow] = useState<number | null>(null);
@@ -68,7 +66,11 @@ export function RoomChat({ roomId }: { roomId: string }) {
   const [mediaUploadReady, setMediaUploadReady] = useState<boolean | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
   const [roomSyncError, setRoomSyncError] = useState<string | null>(null);
-  const wipeReasonRef = useRef<"manual" | "expire" | null>(null);
+  const [roomCapacityBlocked, setRoomCapacityBlocked] = useState(false);
+  const wipeReasonRef = useRef<"manual" | "expire" | "remote" | null>(null);
+  const hadLoadedRoomRef = useRef(false);
+  const endedRef = useRef(false);
+  const wipingRef = useRef(false);
   const pollRef = useRef<number | null>(null);
   const typingPingRef = useRef(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -112,6 +114,9 @@ export function RoomChat({ roomId }: { roomId: string }) {
     return () => window.clearInterval(id);
   }, []);
 
+  endedRef.current = ended;
+  wipingRef.current = wiping;
+
   const remaining =
     expiresAtMs != null && now != null
       ? Math.max(0, expiresAtMs - now)
@@ -144,29 +149,43 @@ export function RoomChat({ roomId }: { roomId: string }) {
       return;
     }
     setExpiresAtMs(exp);
+    hadLoadedRoomRef.current = true;
     if (Date.now() > exp) {
       setEnded(true);
     }
   }, [roomId]);
 
   const loadMessages = useCallback(async () => {
-    const q =
-      clientId != null
-        ? `?clientId=${encodeURIComponent(clientId)}`
-        : "";
-    const url = `/api/rooms/${encodeURIComponent(roomId)}/messages${q}`;
-    const result = await fetchRoomJson<{ messages: ApiMessage[]; othersTyping?: boolean }>(
-      url,
-    );
-    if (!result.ok) {
-      if (result.status === 404) {
-        setInvalidRoom(true);
-        setEnded(true);
-        return;
+    if (!clientId) return;
+    const url = `/api/rooms/${encodeURIComponent(roomId)}/messages?clientId=${encodeURIComponent(clientId)}`;
+    const res = await fetch(url, { cache: "no-store" });
+    if (res.status === 403) {
+      setRoomCapacityBlocked(true);
+      if (pollRef.current != null) {
+        window.clearInterval(pollRef.current);
+        pollRef.current = null;
       }
       return;
     }
-    const data = result.data;
+    if (res.status === 400) {
+      return;
+    }
+    if (!res.ok) {
+      if (res.status === 404) {
+        if (hadLoadedRoomRef.current && !endedRef.current && !wipingRef.current) {
+          wipeReasonRef.current = "remote";
+          setWiping(true);
+        } else if (!hadLoadedRoomRef.current) {
+          setInvalidRoom(true);
+          setEnded(true);
+        }
+      }
+      return;
+    }
+    const data = (await res.json()) as {
+      messages: ApiMessage[];
+      othersTyping?: boolean;
+    };
     setMessages(data.messages);
     if (typeof data.othersTyping === "boolean") {
       setOthersTyping(data.othersTyping);
@@ -178,12 +197,13 @@ export function RoomChat({ roomId }: { roomId: string }) {
   }, [loadRoom]);
 
   useEffect(() => {
+    if (!clientId) return;
     void loadMessages();
     pollRef.current = window.setInterval(() => void loadMessages(), 2500);
     return () => {
       if (pollRef.current != null) window.clearInterval(pollRef.current);
     };
-  }, [loadMessages]);
+  }, [loadMessages, clientId]);
 
   useEffect(() => {
     if (!wiping) return;
@@ -229,11 +249,21 @@ export function RoomChat({ roomId }: { roomId: string }) {
           body: payload.text,
           mediaUrl: payload.imageUrl ?? null,
           mediaKind: payload.imageUrl ? "image" : null,
+          clientId: clientId ?? undefined,
         }),
       });
+      if (res.status === 403) {
+        setRoomCapacityBlocked(true);
+        return;
+      }
       if (res.status === 404) {
-        setInvalidRoom(true);
-        setEnded(true);
+        if (hadLoadedRoomRef.current && !endedRef.current && !wipingRef.current) {
+          wipeReasonRef.current = "remote";
+          setWiping(true);
+        } else {
+          setInvalidRoom(true);
+          setEnded(true);
+        }
         return;
       }
       if (!res.ok) {
@@ -287,12 +317,7 @@ export function RoomChat({ roomId }: { roomId: string }) {
   );
 
   function handleWipeComplete() {
-    const reason = wipeReasonRef.current;
     wipeReasonRef.current = null;
-    if (reason === "manual") {
-      router.push("/panel?ended=1");
-      return;
-    }
     setWiping(false);
     setEnded(true);
   }
@@ -305,6 +330,23 @@ export function RoomChat({ roomId }: { roomId: string }) {
     if (!res.ok) return;
     wipeReasonRef.current = "manual";
     setWiping(true);
+  }
+
+  if (roomCapacityBlocked) {
+    return (
+      <div className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center gap-4 px-4 py-12 text-center">
+        <p className="text-lg text-[#f5f0ff] opacity-90">
+          Esta sala já tem duas pessoas a conversar (quem criou o link e mais um convidado). Não é
+          possível entrar com uma terceira ligação.
+        </p>
+        <Link
+          href="/panel"
+          className="rounded-xl bg-[#7b5ea7] px-6 py-3 font-semibold text-[#f5f0ff]"
+        >
+          Voltar ao painel
+        </Link>
+      </div>
+    );
   }
 
   if (invalidRoom) {
@@ -348,7 +390,8 @@ export function RoomChat({ roomId }: { roomId: string }) {
       <div className="min-w-0 rounded-2xl border border-[#c4b0e8]/25 px-3 py-3 text-sm text-[#f5f0ff] sm:px-4">
         <p className="font-[family-name:var(--font-fredoka)] font-semibold">Sala confidencial</p>
         <p className="mt-1 text-xs opacity-80">
-          Só entra quem tiver este link. Conversa privada; não há perfil público nem lista de contactos.
+          Só entra quem tiver este link — <strong>no máximo 2 pessoas</strong> (quem criou o link + 1
+          convidado). Conversa privada; não há perfil público nem lista de contactos.
         </p>
         <p className="mt-2 break-words break-all text-xs opacity-70">{shareUrl}</p>
         <p className="mt-2 break-words text-xs opacity-80">
@@ -432,7 +475,7 @@ export function RoomChat({ roomId }: { roomId: string }) {
         </>
       ) : (
         <Link
-          href="/panel"
+          href="/panel?ended=1"
           className="block rounded-xl bg-[#7b5ea7] py-3 text-center text-sm font-semibold text-[#f5f0ff]"
         >
           Voltar ao painel

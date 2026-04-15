@@ -40,6 +40,11 @@ async function dbReady() {
 /** Fallback local quando Bunny Database não está configurado */
 const memoryRooms = new Map<string, RoomDTO & { messages: MessageDTO[] }>();
 
+/** clientIds distintos por sala — máximo 2 (criador + 1 convidado). */
+const memoryRoomParticipants = new Map<string, Set<string>>();
+
+const MAX_ROOM_PARTICIPANTS = 2;
+
 function iso(d: number): string {
   return new Date(d).toISOString();
 }
@@ -163,7 +168,53 @@ export async function endRoom(id: string): Promise<boolean> {
   if (!r || r.endedAt) return false;
   memoryRooms.delete(id);
   memoryTyping.delete(id);
+  memoryRoomParticipants.delete(id);
   return true;
+}
+
+/**
+ * Regista este browser (clientId) na sala. No máximo 2 clientIds distintos.
+ * Reutiliza o mesmo critério de validade que o typing (`isValidTypingClientId`).
+ */
+export async function joinRoomParticipant(
+  roomId: string,
+  clientId: string,
+): Promise<"ok" | "full" | "invalid"> {
+  if (!isValidTypingClientId(clientId)) return "invalid";
+  const room = await getRoomWithRetry(roomId);
+  if (!room) return "invalid";
+
+  if (useSql()) {
+    const db = await dbReady();
+    const now = new Date().toISOString();
+    await db.execute({
+      sql: `INSERT OR IGNORE INTO room_participants (room_id, client_id, created_at) VALUES (?, ?, ?)`,
+      args: [roomId, clientId, now],
+    });
+    const cntRes = await db.execute({
+      sql: `SELECT COUNT(*) AS c FROM room_participants WHERE room_id = ?`,
+      args: [roomId],
+    });
+    const c = Number(cntRes.rows[0]?.c ?? 0);
+    if (c > MAX_ROOM_PARTICIPANTS) {
+      await db.execute({
+        sql: `DELETE FROM room_participants WHERE room_id = ? AND client_id = ?`,
+        args: [roomId, clientId],
+      });
+      return "full";
+    }
+    return "ok";
+  }
+
+  let set = memoryRoomParticipants.get(roomId);
+  if (!set) {
+    set = new Set();
+    memoryRoomParticipants.set(roomId, set);
+  }
+  if (set.has(clientId)) return "ok";
+  if (set.size >= MAX_ROOM_PARTICIPANTS) return "full";
+  set.add(clientId);
+  return "ok";
 }
 
 export function isValidTypingClientId(id: string | undefined | null): id is string {
@@ -271,15 +322,28 @@ export async function listMessages(roomId: string): Promise<MessageDTO[] | null>
   return [...r.messages];
 }
 
+export type ListMessagesBundle =
+  | { status: "ok"; messages: MessageDTO[]; othersTyping: boolean }
+  | { status: "gone" }
+  | { status: "room_full" }
+  | { status: "bad_client" };
+
 /** Um `getRoom` + queries em paralelo — menos latência que listMessages + areOthersTyping em série. */
 export async function listMessagesAndOthersTyping(
   roomId: string,
   clientId: string | null,
-): Promise<{ messages: MessageDTO[]; othersTyping: boolean } | null> {
+): Promise<ListMessagesBundle> {
   const room = await getRoomWithRetry(roomId);
-  if (!room) return null;
+  if (!room) return { status: "gone" };
 
-  const showTyping = Boolean(clientId && isValidTypingClientId(clientId));
+  if (!clientId || !isValidTypingClientId(clientId)) {
+    return { status: "bad_client" };
+  }
+
+  const joined = await joinRoomParticipant(roomId, clientId);
+  if (joined === "full") return { status: "room_full" };
+  if (joined === "invalid") return { status: "gone" };
+
   const cutoff = typingActivityCutoffMs();
 
   if (useSql()) {
@@ -290,14 +354,12 @@ export async function listMessagesAndOthersTyping(
               FROM messages WHERE room_id = ? ORDER BY created_at ASC`,
         args: [roomId],
       }),
-      showTyping
-        ? db.execute({
-            sql: `SELECT 1 AS n FROM room_typing
-                  WHERE room_id = ? AND client_id != ? AND updated_at > ?
-                  LIMIT 1`,
-            args: [roomId, clientId!, cutoff],
-          })
-        : Promise.resolve({ rows: [] as { n?: number }[] }),
+      db.execute({
+        sql: `SELECT 1 AS n FROM room_typing
+              WHERE room_id = ? AND client_id != ? AND updated_at > ?
+              LIMIT 1`,
+        args: [roomId, clientId, cutoff],
+      }),
     ]);
     const messages = msgRes.rows.map((row) => ({
       id: String(row.id),
@@ -307,36 +369,46 @@ export async function listMessagesAndOthersTyping(
       mediaKind: row.media_kind != null ? String(row.media_kind) : null,
       createdAt: String(row.created_at),
     }));
-    const othersTyping = showTyping ? Boolean(typRes.rows[0]) : false;
-    return { messages, othersTyping };
+    const othersTyping = Boolean(typRes.rows[0]);
+    return { status: "ok", messages, othersTyping };
   }
 
   const r = memoryRooms.get(roomId);
-  if (!r) return null;
+  if (!r) return { status: "gone" };
   const messages = [...r.messages];
+  pruneMemoryTypingRoom(roomId);
+  const m = memoryTyping.get(roomId);
   let othersTyping = false;
-  if (showTyping && clientId) {
-    pruneMemoryTypingRoom(roomId);
-    const m = memoryTyping.get(roomId);
-    if (m) {
-      for (const [cid, t] of m) {
-        if (cid === clientId) continue;
-        if (t > cutoff) {
-          othersTyping = true;
-          break;
-        }
+  if (m) {
+    for (const [cid, t] of m) {
+      if (cid === clientId) continue;
+      if (t > cutoff) {
+        othersTyping = true;
+        break;
       }
     }
   }
-  return { messages, othersTyping };
+  return { status: "ok", messages, othersTyping };
 }
+
+export type PostMessageResult =
+  | { ok: true; message: MessageDTO }
+  | { ok: false; reason: "gone" | "room_full" | "bad_client" };
 
 export async function postMessage(
   roomId: string,
+  clientId: string,
   payload: { body: string; mediaUrl?: string | null; mediaKind?: string | null },
-): Promise<MessageDTO | null> {
+): Promise<PostMessageResult> {
+  if (!isValidTypingClientId(clientId)) {
+    return { ok: false, reason: "bad_client" };
+  }
   const room = await getRoomWithRetry(roomId);
-  if (!room) return null;
+  if (!room) return { ok: false, reason: "gone" };
+
+  const joined = await joinRoomParticipant(roomId, clientId);
+  if (joined === "full") return { ok: false, reason: "room_full" };
+  if (joined === "invalid") return { ok: false, reason: "gone" };
 
   const id = crypto.randomUUID();
   const body = payload.body ?? "";
@@ -360,12 +432,12 @@ export async function postMessage(
             VALUES (?, ?, ?, ?, ?, ?)`,
       args: [id, roomId, body, mediaUrl, mediaKind, createdAt],
     });
-    return msg;
+    return { ok: true, message: msg };
   }
 
   const r = memoryRooms.get(roomId);
-  if (!r) return null;
+  if (!r) return { ok: false, reason: "gone" };
   r.messages.push(msg);
-  return msg;
+  return { ok: true, message: msg };
 }
 

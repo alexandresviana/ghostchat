@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { isValidTypingClientId, setRoomTyping } from "@/lib/room-service";
+import {
+  isValidTypingClientId,
+  joinRoomParticipant,
+  setRoomTyping,
+} from "@/lib/room-service";
 
 export const runtime = "nodejs";
 
@@ -17,6 +21,25 @@ export async function POST(request: Request, { params }: Params) {
   const active = body.active === true;
   if (!isValidTypingClientId(clientId)) {
     return NextResponse.json({ error: "clientId inválido." }, { status: 400 });
+  }
+  if (active) {
+    const j = await joinRoomParticipant(id, clientId);
+    if (j === "full") {
+      return NextResponse.json(
+        {
+          error:
+            "Esta sala já tem o máximo de participantes (1 criador + 1 convidado).",
+          code: "ROOM_FULL",
+        },
+        { status: 403 },
+      );
+    }
+    if (j === "invalid") {
+      return NextResponse.json(
+        { error: "Sala não encontrada ou encerrada." },
+        { status: 404 },
+      );
+    }
   }
   const ok = await setRoomTyping(id, clientId, active);
   if (!ok) {

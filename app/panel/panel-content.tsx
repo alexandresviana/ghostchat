@@ -9,6 +9,7 @@ import {
   formatBRL,
   type PlanCode,
 } from "@/lib/plans";
+import { formatDateTimePtBr } from "@/lib/time-brasil";
 
 const LS_TOKEN = "ghostchat_session_token";
 
@@ -391,7 +392,7 @@ export function PanelContent() {
               {entitlement.windowEndsAt ? (
                 <p className="mt-1 text-xs opacity-70">
                   Válido até{" "}
-                  {new Date(String(entitlement.windowEndsAt)).toLocaleString("pt-BR")}
+                  {formatDateTimePtBr(String(entitlement.windowEndsAt))}
                 </p>
               ) : null}
             </div>

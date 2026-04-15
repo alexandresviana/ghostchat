@@ -70,6 +70,19 @@ async function applySchemaOnce(db: Client): Promise<void> {
   );
 
   await db.execute(`
+    CREATE TABLE IF NOT EXISTS room_participants (
+      room_id TEXT NOT NULL,
+      client_id TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (room_id, client_id),
+      FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
+    )
+  `);
+  await db.execute(
+    `CREATE INDEX IF NOT EXISTS idx_room_participants_room ON room_participants(room_id)`,
+  );
+
+  await db.execute(`
     CREATE TABLE IF NOT EXISTS pay_charges (
       id TEXT PRIMARY KEY,
       correlation_id TEXT UNIQUE NOT NULL,

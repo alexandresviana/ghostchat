@@ -32,6 +32,16 @@ CREATE TABLE IF NOT EXISTS messages (
 
 CREATE INDEX IF NOT EXISTS idx_messages_room ON messages(room_id, created_at);
 
+-- No máximo 2 clientIds distintos por sala (criador + 1 convidado)
+CREATE TABLE IF NOT EXISTS room_participants (
+  room_id TEXT NOT NULL,
+  client_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  PRIMARY KEY (room_id, client_id),
+  FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_room_participants_room ON room_participants(room_id);
+
 -- Job de limpeza (cron Edge / worker): DELETE FROM rooms WHERE expires_at < now OR ended_at IS NOT NULL
 -- e arquivos no storage associados aos media_url.
 
