@@ -11,6 +11,11 @@ const PanelContent = dynamic(() => import("./panel-content").then((m) => m.Panel
   ),
 });
 
-export function PanelLoader() {
-  return <PanelContent />;
+export function PanelLoader({
+  adminPathToken,
+}: {
+  /** Segmento em `/panel/i/[token]` — comparado com NEXT_PUBLIC_GHOSTCHAT_ADMIN_UNLOCK_TOKEN */
+  adminPathToken?: string;
+} = {}) {
+  return <PanelContent adminPathToken={adminPathToken} />;
 }

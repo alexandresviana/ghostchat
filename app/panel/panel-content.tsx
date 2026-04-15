@@ -37,16 +37,35 @@ function qrImageSrc(raw: string): string {
   return `data:image/png;base64,${s}`;
 }
 
-export function PanelContent() {
+function adminUnlockTokenFromEnv(): string {
+  return (
+    process.env.NEXT_PUBLIC_GHOSTCHAT_ADMIN_UNLOCK_TOKEN?.trim() ||
+    process.env.NEXT_PUBLIC_GHOSTCHAT_ADMIN_QUERY_TOKEN?.trim() ||
+    ""
+  );
+}
+
+export function PanelContent({
+  adminPathToken,
+}: {
+  /** Token do path `/panel/i/[token]` (recomendado em produção). */
+  adminPathToken?: string;
+} = {}) {
   const searchParams = useSearchParams();
   const ended = searchParams.get("ended") === "1";
-  /** Só com URL correta o painel mostra o formulário (ex.: ?ghostchat_admin=... + token no env). */
+  /** Formulário interno: path `/panel/i/<token>` e/ou query `?ghostchat_admin=<token>` (legado). */
   const adminPanelUnlocked = useMemo(() => {
-    const token =
-      process.env.NEXT_PUBLIC_GHOSTCHAT_ADMIN_QUERY_TOKEN?.trim() ?? "";
-    if (!token) return false;
-    return searchParams.get("ghostchat_admin") === token;
-  }, [searchParams]);
+    const expected = adminUnlockTokenFromEnv();
+    if (!expected) return false;
+    if (adminPathToken) {
+      try {
+        if (decodeURIComponent(adminPathToken) === expected) return true;
+      } catch {
+        if (adminPathToken === expected) return true;
+      }
+    }
+    return searchParams.get("ghostchat_admin") === expected;
+  }, [searchParams, adminPathToken]);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
