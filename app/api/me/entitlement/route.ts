@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { bypassPayment } from "@/lib/env-payment";
+import { bypassPayment, freeTestLinkEnabled } from "@/lib/env-payment";
 import { verifySessionToken } from "@/lib/entitlement-jwt";
 import { getEntitlementByEmail } from "@/lib/payment-service";
 import { getBearerToken } from "@/lib/request-session";
@@ -16,6 +16,7 @@ export async function GET(request: Request) {
       linksLimit: null,
       windowEndsAt: null,
       planLabel: "dev (bypass)",
+      freeTestLinkEnabled: false,
     });
   }
 
@@ -31,6 +32,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       authenticated: false,
       active: false,
+      freeTestLinkEnabled: freeTestLinkEnabled(),
     });
   }
 
@@ -51,6 +53,7 @@ export async function GET(request: Request) {
       active: false,
       email,
       message: "Sem pacote ativo ou janela de 30 dias expirada.",
+      freeTestLinkEnabled: freeTestLinkEnabled(),
     });
   }
 
@@ -71,5 +74,6 @@ export async function GET(request: Request) {
     linksRemaining: remaining,
     unlimited,
     windowEndsAt: new Date(ent.windowEndsAtMs).toISOString(),
+    freeTestLinkEnabled: false,
   });
 }

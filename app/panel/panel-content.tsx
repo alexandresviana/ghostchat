@@ -16,6 +16,7 @@ type MeEntitlementResponse = {
   bypass?: boolean;
   authenticated?: boolean;
   active?: boolean;
+  freeTestLinkEnabled?: boolean;
   planLabel?: string;
   linksRemaining?: number | null;
   linksLimit?: number | null;
@@ -50,6 +51,8 @@ export function PanelContent() {
 
   const [planCode, setPlanCode] = useState<PlanCode>("p10");
   const [payLoading, setPayLoading] = useState(false);
+  const [freeLoading, setFreeLoading] = useState(false);
+  const [freeTestOffer, setFreeTestOffer] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
   const [pixCorrelation, setPixCorrelation] = useState<string | null>(null);
   const [pixQr, setPixQr] = useState<string | null>(null);
@@ -75,6 +78,9 @@ export function PanelContent() {
           }
           if (d.authenticated === false) {
             setEntitlement(null);
+          }
+          if (typeof d.freeTestLinkEnabled === "boolean") {
+            setFreeTestOffer(d.freeTestLinkEnabled);
           }
         }
       } catch {
@@ -109,6 +115,9 @@ export function PanelContent() {
         return;
       }
       const data = (await res.json()) as MeEntitlementResponse;
+      if (typeof data.freeTestLinkEnabled === "boolean") {
+        setFreeTestOffer(data.freeTestLinkEnabled);
+      }
       if (data.bypass === true) {
         setBypassMode(true);
         setEntitlement(null);
@@ -290,6 +299,28 @@ export function PanelContent() {
     }
   }, [planCode, startPixPolling]);
 
+  const handleFreeTest = useCallback(async () => {
+    setFreeLoading(true);
+    setPayError(null);
+    try {
+      const res = await fetch("/api/entitlement/free-test", { method: "POST" });
+      const j = (await res.json().catch(() => ({}))) as { error?: string; token?: string };
+      if (!res.ok) {
+        setPayError(j.error ?? "Teste grátis indisponível.");
+        return;
+      }
+      if (j.token) {
+        window.localStorage.setItem(LS_TOKEN, j.token);
+        setSessionToken(j.token);
+        setFreeTestOffer(false);
+      }
+    } catch {
+      setPayError("Erro de rede ao ativar teste grátis.");
+    } finally {
+      setFreeLoading(false);
+    }
+  }, []);
+
   const logoutSession = useCallback(() => {
     stopPolling();
     window.localStorage.removeItem(LS_TOKEN);
@@ -370,6 +401,24 @@ export function PanelContent() {
                 Escolha quantos links precisa nos próximos 30 dias após o PIX. Não é preciso criar
                 conta nem preencher formulário — o acesso fica neste aparelho após o pagamento.
               </p>
+
+              {freeTestOffer ? (
+                <div className="rounded-xl border border-dashed border-[#7ef0c8]/50 bg-[#7ef0c8]/5 p-3">
+                  <p className="mb-2 text-xs text-[#c8ffe8]">
+                    Teste sem custo: um link para validar o fluxo (mesma janela de 30 dias que os
+                    planos pagos).
+                  </p>
+                  <button
+                    type="button"
+                    disabled={freeLoading || payLoading}
+                    onClick={() => void handleFreeTest()}
+                    className="w-full rounded-xl border border-[#7ef0c8]/60 bg-transparent py-2.5 text-sm font-semibold text-[#7ef0c8] transition hover:bg-[#7ef0c8]/10 disabled:opacity-50"
+                  >
+                    {freeLoading ? "A ativar…" : "Ativar 1 link grátis (teste)"}
+                  </button>
+                </div>
+              ) : null}
+
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                 {PLANS.map((p) => (
                   <button
@@ -396,10 +445,10 @@ export function PanelContent() {
 
               <button
                 type="button"
-                disabled={payLoading}
+                disabled={payLoading || freeLoading}
                 onClick={() => void handleStartPayment()}
                 className={
-                  payLoading
+                  payLoading || freeLoading
                     ? "cursor-wait rounded-2xl bg-[#c4b0e8]/40 py-3 text-sm font-semibold text-[#0d0d1a]"
                     : "cursor-pointer rounded-2xl bg-[#c4b0e8] py-3 text-sm font-semibold text-[#0d0d1a] transition hover:opacity-90"
                 }

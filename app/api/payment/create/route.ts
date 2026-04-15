@@ -38,6 +38,15 @@ export async function POST(request: Request) {
   if (!plan) {
     return NextResponse.json({ error: "Plano inválido." }, { status: 400 });
   }
+  if (plan.code === "free" || plan.priceCents < 1) {
+    return NextResponse.json(
+      {
+        error:
+          "Plano grátis não é pago via PIX. Use a opção «1 link grátis» no painel, se estiver ativa.",
+      },
+      { status: 400 },
+    );
+  }
 
   const correlationID = crypto.randomUUID();
   const chargeId = crypto.randomUUID();

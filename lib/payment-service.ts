@@ -204,6 +204,28 @@ export async function issueSessionTokenForEmail(
   return signSessionToken(ent.email, ent.windowEndsAtMs);
 }
 
+/** 1 link grátis, 30 dias — sem Woovi; email sintético único. */
+export async function grantFreeTestEntitlement(): Promise<{ token: string }> {
+  const plan = getPlan("free");
+  if (!plan) throw new Error("Plano free indisponível.");
+  const id = crypto.randomUUID();
+  const correlationId = `free-${id}`;
+  const domain =
+    process.env.GHOSTCHAT_PIX_EMAIL_DOMAIN?.trim() || "ghostchat.local";
+  const email = `free-${id.replace(/-/g, "")}@${domain}`;
+
+  await upsertEntitlementAfterPayment({
+    customerEmail: email,
+    planCode: "free",
+    correlationId,
+  });
+
+  const token = await issueSessionTokenForEmail(email);
+  if (!token) throw new Error("Falha ao emitir sessão.");
+  bunnyLog("free test entitlement →", email);
+  return { token };
+}
+
 /** Consome 1 link e cria sala (SQL). */
 export async function consumeLinkAndCreateRoom(
   customerEmail: string,

@@ -1,6 +1,6 @@
-/** Pacotes de links (30 dias após pagamento confirmado). Valores em centavos (BRL). */
+/** Pacotes de links (30 dias após pagamento ou ativação). Valores em centavos (BRL). */
 
-export type PlanCode = "p1" | "p10" | "p50" | "unl";
+export type PlanCode = "free" | "p10" | "p50" | "unl";
 
 export type PlanDefinition = {
   code: PlanCode;
@@ -9,6 +9,15 @@ export type PlanDefinition = {
   priceCents: number;
 };
 
+/** Plano interno — 1 link sem custo; só via POST /api/entitlement/free-test (env). */
+export const FREE_TEST_PLAN: PlanDefinition = {
+  code: "free",
+  label: "1 link (teste grátis)",
+  linksLimit: 1,
+  priceCents: 0,
+};
+
+/** Planos pagos (PIX) — mostrados no painel. */
 export const PLANS: PlanDefinition[] = [
   {
     code: "p10",
@@ -28,15 +37,10 @@ export const PLANS: PlanDefinition[] = [
     linksLimit: -1,
     priceCents: 14990,
   },
-  {
-    code: "p1",
-    label: "1 link (teste)",
-    linksLimit: 1,
-    priceCents: 100,
-  },
 ];
 
 export function getPlan(code: string): PlanDefinition | undefined {
+  if (code === FREE_TEST_PLAN.code) return FREE_TEST_PLAN;
   return PLANS.find((p) => p.code === code);
 }
 

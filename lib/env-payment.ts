@@ -24,3 +24,11 @@ export function bypassPayment(): boolean {
     process.env.GHOSTCHAT_BYPASS_PAYMENT === "true"
   );
 }
+
+/** Permite POST /api/entitlement/free-test — 1 link grátis (só ative em staging/testes). */
+export function freeTestLinkEnabled(): boolean {
+  return (
+    process.env.GHOSTCHAT_ENABLE_FREE_TEST_LINK === "1" ||
+    process.env.GHOSTCHAT_ENABLE_FREE_TEST_LINK === "true"
+  );
+}
