@@ -703,9 +703,7 @@ export function PanelContent({
             Acesso interno
           </summary>
           <div className="mt-3 flex flex-col gap-2 text-xs text-[#f5f0ff]/85">
-            <p className="opacity-80">
-              Segredo do servidor (<code className="text-[10px]">GHOSTCHAT_ADMIN_SECRET</code>).
-            </p>
+            <p className="opacity-80">Digite a senha</p>
             <input
               type="password"
               autoComplete="current-password"
