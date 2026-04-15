@@ -1,10 +1,12 @@
 import { Suspense } from "react";
+import { tokenMatchesAdminPanelUnlock } from "@/lib/admin-unlock";
 import { PanelLoader } from "../../panel-loader";
 
 type Props = { params: Promise<{ token: string }> };
 
 export default async function PanelInternalAccessPage({ params }: Props) {
   const { token } = await params;
+  const serverAdminUnlockOk = tokenMatchesAdminPanelUnlock(token);
   return (
     <Suspense
       fallback={
@@ -13,7 +15,7 @@ export default async function PanelInternalAccessPage({ params }: Props) {
         </div>
       }
     >
-      <PanelLoader adminPathToken={token} />
+      <PanelLoader serverAdminUnlockOk={serverAdminUnlockOk} />
     </Suspense>
   );
 }

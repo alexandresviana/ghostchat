@@ -37,35 +37,46 @@ function qrImageSrc(raw: string): string {
   return `data:image/png;base64,${s}`;
 }
 
-function adminUnlockTokenFromEnv(): string {
-  return (
-    process.env.NEXT_PUBLIC_GHOSTCHAT_ADMIN_UNLOCK_TOKEN?.trim() ||
-    process.env.NEXT_PUBLIC_GHOSTCHAT_ADMIN_QUERY_TOKEN?.trim() ||
-    ""
-  );
-}
-
 export function PanelContent({
-  adminPathToken,
+  serverAdminUnlockOk,
 }: {
-  /** Token do path `/panel/i/[token]` (recomendado em produção). */
-  adminPathToken?: string;
+  /** Definido no servidor para `/panel/i/[token]` (env lido em runtime). */
+  serverAdminUnlockOk?: boolean;
 } = {}) {
   const searchParams = useSearchParams();
   const ended = searchParams.get("ended") === "1";
-  /** Formulário interno: path `/panel/i/<token>` e/ou query `?ghostchat_admin=<token>` (legado). */
-  const adminPanelUnlocked = useMemo(() => {
-    const expected = adminUnlockTokenFromEnv();
-    if (!expected) return false;
-    if (adminPathToken) {
-      try {
-        if (decodeURIComponent(adminPathToken) === expected) return true;
-      } catch {
-        if (adminPathToken === expected) return true;
-      }
+  const queryAdminToken = searchParams.get("ghostchat_admin");
+  const [queryUnlockOk, setQueryUnlockOk] = useState(false);
+
+  useEffect(() => {
+    if (!queryAdminToken?.trim()) {
+      setQueryUnlockOk(false);
+      return;
     }
-    return searchParams.get("ghostchat_admin") === expected;
-  }, [searchParams, adminPathToken]);
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/admin/verify-panel-unlock", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: queryAdminToken }),
+        });
+        if (cancelled || !res.ok) {
+          if (!cancelled) setQueryUnlockOk(false);
+          return;
+        }
+        const j = (await res.json()) as { ok?: boolean };
+        if (!cancelled) setQueryUnlockOk(j.ok === true);
+      } catch {
+        if (!cancelled) setQueryUnlockOk(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [queryAdminToken]);
+
+  const adminPanelUnlocked = serverAdminUnlockOk === true || queryUnlockOk;
   const [roomId, setRoomId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);

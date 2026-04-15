@@ -12,10 +12,10 @@ const PanelContent = dynamic(() => import("./panel-content").then((m) => m.Panel
 });
 
 export function PanelLoader({
-  adminPathToken,
+  serverAdminUnlockOk,
 }: {
-  /** Segmento em `/panel/i/[token]` — comparado com NEXT_PUBLIC_GHOSTCHAT_ADMIN_UNLOCK_TOKEN */
-  adminPathToken?: string;
+  /** Definido no servidor em `/panel/i/[token]` após comparar o path com o env. */
+  serverAdminUnlockOk?: boolean;
 } = {}) {
-  return <PanelContent adminPathToken={adminPathToken} />;
+  return <PanelContent serverAdminUnlockOk={serverAdminUnlockOk} />;
 }
