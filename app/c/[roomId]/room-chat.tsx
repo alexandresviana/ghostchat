@@ -9,6 +9,8 @@ import {
   useState,
 } from "react";
 import { ChatComposer } from "@/components/ChatComposer";
+import type { ConversationEndReason } from "@/components/ConversationEndedScreen";
+import { ConversationEndedScreen } from "@/components/ConversationEndedScreen";
 import { GhostAvatar } from "@/components/GhostAvatar";
 import { GhostWipeOverlay } from "@/components/GhostWipeOverlay";
 import { MessageBubble } from "@/components/MessageBubble";
@@ -67,6 +69,7 @@ export function RoomChat({ roomId }: { roomId: string }) {
   const [sendError, setSendError] = useState<string | null>(null);
   const [roomSyncError, setRoomSyncError] = useState<string | null>(null);
   const [roomCapacityBlocked, setRoomCapacityBlocked] = useState(false);
+  const [endReason, setEndReason] = useState<ConversationEndReason | null>(null);
   const wipeReasonRef = useRef<"manual" | "expire" | "remote" | null>(null);
   const hadLoadedRoomRef = useRef(false);
   const endedRef = useRef(false);
@@ -151,6 +154,7 @@ export function RoomChat({ roomId }: { roomId: string }) {
     setExpiresAtMs(exp);
     hadLoadedRoomRef.current = true;
     if (Date.now() > exp) {
+      setEndReason("expire");
       setEnded(true);
     }
   }, [roomId]);
@@ -223,7 +227,7 @@ export function RoomChat({ roomId }: { roomId: string }) {
 
   useLayoutEffect(() => {
     scrollChatToBottom();
-  }, [messages, othersTyping, ended, scrollChatToBottom]);
+  }, [messages, othersTyping, scrollChatToBottom]);
 
   useEffect(() => {
     const vv = window.visualViewport;
@@ -317,8 +321,10 @@ export function RoomChat({ roomId }: { roomId: string }) {
   );
 
   function handleWipeComplete() {
+    const r = wipeReasonRef.current;
     wipeReasonRef.current = null;
     setWiping(false);
+    if (r) setEndReason(r);
     setEnded(true);
   }
 
@@ -351,16 +357,12 @@ export function RoomChat({ roomId }: { roomId: string }) {
 
   if (invalidRoom) {
     return (
-      <div className="mx-auto flex min-h-[60vh] max-w-lg flex-col items-center justify-center gap-4 px-4 py-12 text-center">
-        <p className="text-lg text-[#f5f0ff] opacity-90">Esta sala não existe ou já foi encerrada.</p>
-        <Link
-          href="/panel"
-          className="rounded-xl bg-[#7b5ea7] px-6 py-3 font-semibold text-[#f5f0ff]"
-        >
-          Voltar ao painel
-        </Link>
-      </div>
+      <ConversationEndedScreen reason="remote" />
     );
+  }
+
+  if (ended && !wiping) {
+    return <ConversationEndedScreen reason={endReason} />;
   }
 
   return (
@@ -397,9 +399,7 @@ export function RoomChat({ roomId }: { roomId: string }) {
         <p className="mt-2 break-words text-xs opacity-80">
           {expiresAtMs == null || now == null
             ? "Sincronizando com o servidor…"
-            : ended
-              ? "Esta sala encerrou ou expirou."
-              : `Expira em ${formatRemaining(remaining)} · depois as mensagens e ficheiros são apagados.`}
+            : `Expira em ${formatRemaining(remaining)} · depois as mensagens e ficheiros são apagados.`}
         </p>
       </div>
 
@@ -426,7 +426,7 @@ export function RoomChat({ roomId }: { roomId: string }) {
           />
         </div>
         <div className="relative z-10 flex min-h-0 flex-col gap-3 p-3">
-          {messages.length === 0 && !ended ? (
+          {messages.length === 0 ? (
             <p className="text-center text-sm opacity-60">Nenhuma mensagem ainda. Diga oi 👻</p>
           ) : null}
           {messages.map((m, i) => (
@@ -444,43 +444,29 @@ export function RoomChat({ roomId }: { roomId: string }) {
               }
             />
           ))}
-          {othersTyping && !ended ? <TypingIndicator /> : null}
-          {ended ? (
-            <p className="text-center text-sm opacity-60">Sem novas mensagens nesta sala.</p>
-          ) : null}
+          {othersTyping ? <TypingIndicator /> : null}
         </div>
       </div>
 
-      {!ended ? (
-        <>
-          {sendError ? (
-            <p className="rounded-xl border border-red-400/35 bg-red-950/40 px-3 py-2 text-center text-xs text-red-200/95">
-              {sendError}
-            </p>
-          ) : null}
-          <ChatComposer
-            roomId={roomId}
-            mediaUploadReady={mediaUploadReady}
-            onSend={send}
-            onTypingActive={sendTypingPing}
-            onInputFocus={scrollChatToBottom}
-          />
-          <button
-            type="button"
-            onClick={() => void encerrar()}
-            className="w-full rounded-xl border border-[#c4b0e8]/35 py-3 text-sm font-semibold text-[#f5f0ff] transition hover:bg-white/5"
-          >
-            Encerrar conversa
-          </button>
-        </>
-      ) : (
-        <Link
-          href="/panel?ended=1"
-          className="block rounded-xl bg-[#7b5ea7] py-3 text-center text-sm font-semibold text-[#f5f0ff]"
-        >
-          Voltar ao painel
-        </Link>
-      )}
+      {sendError ? (
+        <p className="rounded-xl border border-red-400/35 bg-red-950/40 px-3 py-2 text-center text-xs text-red-200/95">
+          {sendError}
+        </p>
+      ) : null}
+      <ChatComposer
+        roomId={roomId}
+        mediaUploadReady={mediaUploadReady}
+        onSend={send}
+        onTypingActive={sendTypingPing}
+        onInputFocus={scrollChatToBottom}
+      />
+      <button
+        type="button"
+        onClick={() => void encerrar()}
+        className="w-full rounded-xl border border-[#c4b0e8]/35 py-3 text-sm font-semibold text-[#f5f0ff] transition hover:bg-white/5"
+      >
+        Encerrar conversa
+      </button>
 
     </div>
   );

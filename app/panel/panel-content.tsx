@@ -469,7 +469,10 @@ export function PanelContent({
       ) : null}
 
       {!bypassMode && !adminActive && !entLoading ? (
-        <section className="flex flex-col gap-4 rounded-2xl border border-[#c4b0e8]/25 bg-[#1a1530]/40 p-4">
+        <section
+          id="pacote"
+          className="flex flex-col gap-4 rounded-2xl border border-[#c4b0e8]/25 bg-[#1a1530]/40 p-4"
+        >
           <div className="flex items-center justify-between gap-2">
             <p className="text-sm font-semibold text-[#f5f0ff]">Pacote (30 dias)</p>
             {sessionToken ? (
