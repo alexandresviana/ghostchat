@@ -40,6 +40,13 @@ function qrImageSrc(raw: string): string {
 export function PanelContent() {
   const searchParams = useSearchParams();
   const ended = searchParams.get("ended") === "1";
+  /** Só com URL correta o painel mostra o formulário (ex.: ?ghostchat_admin=... + token no env). */
+  const adminPanelUnlocked = useMemo(() => {
+    const token =
+      process.env.NEXT_PUBLIC_GHOSTCHAT_ADMIN_QUERY_TOKEN?.trim() ?? "";
+    if (!token) return false;
+    return searchParams.get("ghostchat_admin") === token;
+  }, [searchParams]);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
@@ -60,6 +67,15 @@ export function PanelContent() {
   const [pixBr, setPixBr] = useState<string | null>(null);
   const [pixStatus, setPixStatus] = useState<string | null>(null);
 
+  const [adminActive, setAdminActive] = useState(false);
+  const [adminLoginAvailable, setAdminLoginAvailable] = useState(false);
+  const [adminSecretInput, setAdminSecretInput] = useState("");
+  const [adminBusy, setAdminBusy] = useState(false);
+  const [adminNotice, setAdminNotice] = useState<{
+    kind: "ok" | "err";
+    text: string;
+  } | null>(null);
+
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -68,26 +84,42 @@ export function PanelContent() {
     setSessionToken(t);
 
     void (async () => {
+      const [probeRes, adminRes] = await Promise.all([
+        fetch("/api/me/entitlement"),
+        fetch("/api/admin/status", { credentials: "include" }),
+      ]);
+
+      if (adminRes.ok) {
+        const a = (await adminRes.json()) as {
+          admin?: boolean;
+          adminLoginAvailable?: boolean;
+        };
+        setAdminLoginAvailable(a.adminLoginAvailable === true);
+        setAdminActive(a.admin === true);
+        if (a.admin === true) setEntLoading(false);
+      }
+
       try {
-        const probe = await fetch("/api/me/entitlement");
-        if (probe.ok) {
-          const d = (await probe.json()) as MeEntitlementResponse;
-          if (d.bypass === true) {
-            setBypassMode(true);
-            setEntLoading(false);
-            return;
-          }
-          if (d.authenticated === false) {
-            setEntitlement(null);
-          }
-          if (typeof d.freeTestLinkEnabled === "boolean") {
-            setFreeTestOffer(d.freeTestLinkEnabled);
-          }
+        if (!probeRes.ok) {
+          setBypassMode(false);
+          return;
+        }
+        const d = (await probeRes.json()) as MeEntitlementResponse;
+        if (d.bypass === true) {
+          setBypassMode(true);
+          setEntLoading(false);
+          return;
+        }
+        setBypassMode(false);
+        if (d.authenticated === false) {
+          setEntitlement(null);
+        }
+        if (typeof d.freeTestLinkEnabled === "boolean") {
+          setFreeTestOffer(d.freeTestLinkEnabled);
         }
       } catch {
-        /* ignore */
+        setBypassMode(false);
       }
-      setBypassMode(false);
     })();
   }, []);
 
@@ -132,12 +164,12 @@ export function PanelContent() {
   }, []);
 
   useEffect(() => {
-    if (bypassMode) {
+    if (bypassMode || adminActive) {
       setEntLoading(false);
       return;
     }
     void refreshEntitlement(sessionToken);
-  }, [sessionToken, refreshEntitlement, bypassMode]);
+  }, [sessionToken, refreshEntitlement, bypassMode, adminActive]);
 
   const stopPolling = useCallback(() => {
     if (pollRef.current) {
@@ -196,6 +228,7 @@ export function PanelContent() {
 
   const canCreateLink =
     bypassMode ||
+    adminActive ||
     (entitlement &&
       typeof entitlement === "object" &&
       entitlement.active === true);
@@ -210,7 +243,11 @@ export function PanelContent() {
           ? window.localStorage.getItem(LS_TOKEN)
           : null;
       if (t) headers.Authorization = `Bearer ${t}`;
-      const res = await fetch("/api/rooms", { method: "POST", headers });
+      const res = await fetch("/api/rooms", {
+        method: "POST",
+        headers,
+        credentials: "include",
+      });
       if (res.status === 402) {
         setCreateError(
           "É necessário um pacote ativo. Escolha um plano e pague via PIX abaixo.",
@@ -333,6 +370,51 @@ export function PanelContent() {
     setPixStatus(null);
   }, [stopPolling]);
 
+  const handleAdminActivate = useCallback(async () => {
+    setAdminBusy(true);
+    setAdminNotice(null);
+    try {
+      const res = await fetch("/api/admin/activate", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ secret: adminSecretInput }),
+      });
+      const j = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
+        setAdminNotice({
+          kind: "err",
+          text: j.error ?? "Não foi possível ativar.",
+        });
+        return;
+      }
+      setAdminSecretInput("");
+      setAdminActive(true);
+      setEntLoading(false);
+      setAdminNotice(null);
+    } catch {
+      setAdminNotice({ kind: "err", text: "Erro de rede." });
+    } finally {
+      setAdminBusy(false);
+    }
+  }, [adminSecretInput]);
+
+  const handleAdminDeactivate = useCallback(async () => {
+    setAdminBusy(true);
+    setAdminNotice(null);
+    try {
+      await fetch("/api/admin/deactivate", { method: "POST", credentials: "include" });
+      setAdminActive(false);
+      void refreshEntitlement(
+        typeof window !== "undefined" ? window.localStorage.getItem(LS_TOKEN) : null,
+      );
+    } catch {
+      setAdminNotice({ kind: "err", text: "Erro de rede ao sair." });
+    } finally {
+      setAdminBusy(false);
+    }
+  }, [refreshEntitlement]);
+
   const selectedPlan = PLANS.find((p) => p.code === planCode);
   const pixQrResolved = pixQr ? qrImageSrc(pixQr) : "";
 
@@ -356,7 +438,7 @@ export function PanelContent() {
         </p>
       ) : null}
 
-      {!bypassMode && !entLoading ? (
+      {!bypassMode && !adminActive && !entLoading ? (
         <section className="flex flex-col gap-4 rounded-2xl border border-[#c4b0e8]/25 bg-[#1a1530]/40 p-4">
           <div className="flex items-center justify-between gap-2">
             <p className="text-sm font-semibold text-[#f5f0ff]">Pacote (30 dias)</p>
@@ -501,6 +583,26 @@ export function PanelContent() {
         </p>
       ) : null}
 
+      {adminActive && !bypassMode ? (
+        <div className="flex flex-col gap-2 rounded-xl bg-[#4a3f7a]/40 px-3 py-2 text-center text-xs text-[#e8e0ff]">
+          <p>
+            <strong>Modo interno</strong> — criar chats não consome pacote nem PIX (sessão neste
+            aparelho, até 7 dias).
+          </p>
+          <button
+            type="button"
+            disabled={adminBusy}
+            onClick={() => void handleAdminDeactivate()}
+            className="mx-auto rounded-lg border border-[#c4b0e8]/40 px-3 py-1.5 font-semibold text-[#f5f0ff] hover:bg-white/5 disabled:opacity-50"
+          >
+            {adminBusy ? "A sair…" : "Terminar sessão interna"}
+          </button>
+          {adminNotice?.kind === "err" ? (
+            <p className="text-[11px] text-red-300">{adminNotice.text}</p>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="flex flex-col gap-4">
         {createError ? (
           <p className="rounded-xl px-3 py-2 text-center text-sm text-red-300">{createError}</p>
@@ -519,7 +621,7 @@ export function PanelContent() {
           }
           title={
             !bypassMode && !canCreateLink
-              ? "Compre um pacote e conclua o PIX para gerar links."
+              ? "Compre um pacote e conclua o PIX, ou use o acesso interno (URL reservada)."
               : undefined
           }
         >
@@ -555,12 +657,52 @@ export function PanelContent() {
           </div>
         ) : (
           <p className="text-center text-sm opacity-55">
-            {canCreateLink || bypassMode
+            {canCreateLink || bypassMode || adminActive
               ? "Nenhuma sala ainda — clique em \"Criar novo chat\" para gerar o link."
               : "Após o PIX confirmado, o botão acima fica ativo para gerar links."}
           </p>
         )}
       </div>
+
+      {adminLoginAvailable && adminPanelUnlocked && !adminActive ? (
+        <details className="rounded-xl border border-[#c4b0e8]/20 bg-[#0d0d1a]/50 px-3 py-2 text-left">
+          <summary className="cursor-pointer text-xs font-medium text-[#c4b0e8]">
+            Acesso interno
+          </summary>
+          <div className="mt-3 flex flex-col gap-2 text-xs text-[#f5f0ff]/85">
+            <p className="opacity-80">
+              Segredo do servidor (<code className="text-[10px]">GHOSTCHAT_ADMIN_SECRET</code>).
+            </p>
+            <input
+              type="password"
+              autoComplete="current-password"
+              className="rounded-lg border border-[#c4b0e8]/30 bg-[#0d0d1a] px-2 py-2 text-sm text-[#f5f0ff]"
+              placeholder="Segredo"
+              value={adminSecretInput}
+              onChange={(e) => setAdminSecretInput(e.target.value)}
+            />
+            <button
+              type="button"
+              disabled={adminBusy || !adminSecretInput.trim()}
+              onClick={() => void handleAdminActivate()}
+              className="rounded-lg bg-[#5c4a8a] py-2 font-semibold text-[#f5f0ff] disabled:opacity-50"
+            >
+              {adminBusy ? "A validar…" : "Iniciar sessão"}
+            </button>
+            {adminNotice ? (
+              <p
+                className={
+                  adminNotice.kind === "err"
+                    ? "text-center text-[11px] text-red-300"
+                    : "text-center text-[11px] text-[#7ef0c8]/90"
+                }
+              >
+                {adminNotice.text}
+              </p>
+            ) : null}
+          </div>
+        </details>
+      ) : null}
 
       <p className="text-center text-xs opacity-50">
         <Link href="/" className="underline">

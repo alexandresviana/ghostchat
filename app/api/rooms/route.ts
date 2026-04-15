@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAdminSessionActive } from "@/lib/admin-request";
 import { bypassPayment } from "@/lib/env-payment";
 import { hasBunnySqlConfig } from "@/lib/env-bunny";
 import { consumeLinkAndCreateRoom } from "@/lib/payment-service";
@@ -10,6 +11,11 @@ export const runtime = "nodejs";
 export async function POST(request: Request) {
   try {
     if (bypassPayment()) {
+      const room = await createRoom();
+      return NextResponse.json({ room });
+    }
+
+    if (await isAdminSessionActive()) {
       const room = await createRoom();
       return NextResponse.json({ room });
     }
