@@ -62,7 +62,9 @@ CREATE TABLE IF NOT EXISTS pay_charges (
   customer_email TEXT NOT NULL,
   customer_phone TEXT,
   created_at TEXT NOT NULL,
-  paid_at TEXT
+  paid_at TEXT,
+  -- plan_code = 'custom': número de links acordado na compra personalizada (URL /panel/o/...)
+  custom_links_limit INTEGER
 );
 CREATE INDEX IF NOT EXISTS idx_pay_charges_email ON pay_charges(customer_email);
 

@@ -1,6 +1,6 @@
 /** Pacotes de links (30 dias após pagamento ou ativação). Valores em centavos (BRL). */
 
-export type PlanCode = "free" | "p5" | "p10" | "p50" | "unl";
+export type PlanCode = "free" | "p5" | "p10" | "p50" | "unl" | "custom";
 
 export type PlanDefinition = {
   code: PlanCode;
@@ -14,6 +14,14 @@ export const FREE_TEST_PLAN: PlanDefinition = {
   code: "free",
   label: "1 link (teste grátis)",
   linksLimit: 1,
+  priceCents: 0,
+};
+
+/** Cobrança PIX com quantidade/valor definidos pelo cliente (URL reservada). O limite de links vem da BD. */
+export const CUSTOM_PLAN: PlanDefinition = {
+  code: "custom",
+  label: "Pacote personalizado",
+  linksLimit: 0,
   priceCents: 0,
 };
 
@@ -47,6 +55,7 @@ export const PLANS: PlanDefinition[] = [
 
 export function getPlan(code: string): PlanDefinition | undefined {
   if (code === FREE_TEST_PLAN.code) return FREE_TEST_PLAN;
+  if (code === CUSTOM_PLAN.code) return CUSTOM_PLAN;
   return PLANS.find((p) => p.code === code);
 }
 

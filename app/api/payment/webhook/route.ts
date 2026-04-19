@@ -52,6 +52,7 @@ export async function POST(request: Request) {
         customerEmail: done.customerEmail,
         planCode: done.planCode as PlanCode,
         correlationId,
+        linksLimitOverride: done.linksLimitOverride,
       });
     }
   } else if (event.includes("CHARGE_EXPIRED")) {

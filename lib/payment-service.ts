@@ -38,16 +38,23 @@ export async function insertPayCharge(row: {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
+  /** Só para `plan_code = custom`: número de links do pacote. */
+  customLinksLimit?: number | null;
 }): Promise<void> {
   if (!useSql()) return;
   const db = await dbReady();
   const now = new Date().toISOString();
+  const custom =
+    row.planCode === "custom" && row.customLinksLimit != null
+      ? Math.floor(row.customLinksLimit)
+      : null;
   await db.execute({
     sql: `INSERT INTO pay_charges (
       id, correlation_id, plan_code, value_cents, status,
       woovi_identifier, woovi_payment_link_id, br_code,
-      customer_name, customer_email, customer_phone, created_at
-    ) VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?)`,
+      customer_name, customer_email, customer_phone, created_at,
+      custom_links_limit
+    ) VALUES (?, ?, ?, ?, 'PENDING', ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       row.id,
       row.correlationId,
@@ -60,6 +67,7 @@ export async function insertPayCharge(row: {
       row.customerEmail.toLowerCase().trim(),
       row.customerPhone,
       now,
+      custom,
     ],
   });
 }
@@ -88,7 +96,11 @@ export async function getPayChargeByCorrelation(
 export async function updatePayChargeCompleted(
   correlationId: string,
   paidAt: string,
-): Promise<{ planCode: PlanCode; customerEmail: string } | null> {
+): Promise<{
+  planCode: PlanCode;
+  customerEmail: string;
+  linksLimitOverride: number | null;
+} | null> {
   if (!useSql()) return null;
   const db = await dbReady();
   await db.execute({
@@ -96,16 +108,22 @@ export async function updatePayChargeCompleted(
     args: [paidAt, correlationId],
   });
   const res = await db.execute({
-    sql: `SELECT plan_code, customer_email FROM pay_charges WHERE correlation_id = ?`,
+    sql: `SELECT plan_code, customer_email, custom_links_limit FROM pay_charges WHERE correlation_id = ?`,
     args: [correlationId],
   });
   const r = res.rows[0];
   if (!r) return null;
   const pc = String(r.plan_code) as PlanCode;
   if (!getPlan(pc)) return null;
+  const rawCustom = r.custom_links_limit;
+  const linksLimitOverride =
+    pc === "custom" && rawCustom != null && !Number.isNaN(Number(rawCustom))
+      ? Math.floor(Number(rawCustom))
+      : null;
   return {
     planCode: pc,
     customerEmail: String(r.customer_email ?? "").toLowerCase().trim(),
+    linksLimitOverride,
   };
 }
 
@@ -125,16 +143,26 @@ export async function upsertEntitlementAfterPayment(options: {
   customerEmail: string;
   planCode: PlanCode;
   correlationId: string;
+  /** Para `plan_code = custom`, número de links (vem da cobrança). */
+  linksLimitOverride?: number | null;
 }): Promise<{ windowEndsAtMs: number; linksLimit: number }> {
   const plan = getPlan(options.planCode);
   if (!plan) throw new Error("Plano inválido.");
+  let resolvedLimit = plan.linksLimit;
+  if (options.planCode === "custom") {
+    const n = options.linksLimitOverride;
+    if (n == null || !Number.isFinite(n) || n < 1) {
+      throw new Error("Pacote personalizado inválido.");
+    }
+    resolvedLimit = Math.floor(n);
+  }
   const email = options.customerEmail.toLowerCase().trim();
   const ends = Date.now() + WINDOW_MS;
   const endsIso = new Date(ends).toISOString();
   const now = new Date().toISOString();
 
   if (!useSql()) {
-    return { windowEndsAtMs: ends, linksLimit: plan.linksLimit };
+    return { windowEndsAtMs: ends, linksLimit: resolvedLimit };
   }
 
   const db = await dbReady();
@@ -153,7 +181,7 @@ export async function upsertEntitlementAfterPayment(options: {
     args: [
       email,
       options.planCode,
-      plan.linksLimit,
+      resolvedLimit,
       endsIso,
       options.correlationId,
       now,
@@ -161,7 +189,7 @@ export async function upsertEntitlementAfterPayment(options: {
   });
 
   bunnyLog("entitlement atualizado →", email, options.planCode);
-  return { windowEndsAtMs: ends, linksLimit: plan.linksLimit };
+  return { windowEndsAtMs: ends, linksLimit: resolvedLimit };
 }
 
 export type EntitlementState = {

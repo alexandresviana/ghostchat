@@ -103,6 +103,14 @@ async function applySchemaOnce(db: Client): Promise<void> {
     `CREATE INDEX IF NOT EXISTS idx_pay_charges_email ON pay_charges(customer_email)`,
   );
 
+  try {
+    await db.execute(
+      `ALTER TABLE pay_charges ADD COLUMN custom_links_limit INTEGER`,
+    );
+  } catch {
+    /* coluna já existe */
+  }
+
   await db.execute(`
     CREATE TABLE IF NOT EXISTS link_entitlements (
       customer_email TEXT PRIMARY KEY,

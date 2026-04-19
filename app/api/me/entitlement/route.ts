@@ -63,12 +63,17 @@ export async function GET(request: Request) {
     ? null
     : Math.max(0, ent.linksLimit - ent.linksUsed);
 
+  const planLabel =
+    ent.planCode === "custom" && !unlimited
+      ? `${ent.linksLimit} links (personalizado)`
+      : (plan?.label ?? ent.planCode);
+
   return NextResponse.json({
     authenticated: true,
     active: true,
     email: ent.email,
     planCode: ent.planCode,
-    planLabel: plan?.label ?? ent.planCode,
+    planLabel,
     linksUsed: ent.linksUsed,
     linksLimit: unlimited ? null : ent.linksLimit,
     linksRemaining: remaining,
