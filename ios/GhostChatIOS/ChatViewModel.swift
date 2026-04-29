@@ -3,6 +3,8 @@ import UIKit
 
 @MainActor
 final class ChatViewModel: ObservableObject {
+    static let backendBaseURLString = "https://ghostchat.fastlyf.com"
+
     @Published var roomId: String = ""
     @Published var messages: [MessageDTO] = []
     @Published var messageText: String = ""
@@ -10,8 +12,6 @@ final class ChatViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var ended: Bool = false
     @Published var errorMessage: String?
-
-    @Published var baseURLString: String = UserDefaults.standard.string(forKey: "ghostchat.baseURL") ?? "http://localhost:3000"
 
     let clientId: String
     private var pollTask: Task<Void, Never>?
@@ -27,10 +27,6 @@ final class ChatViewModel: ObservableObject {
         }
     }
 
-    func persistBaseURL() {
-        UserDefaults.standard.set(baseURLString, forKey: "ghostchat.baseURL")
-    }
-
     func createRoom() async {
         await withClient { [self] client in
             self.isLoading = true
@@ -39,8 +35,14 @@ final class ChatViewModel: ObservableObject {
             self.roomId = room.id
             self.ended = false
             self.errorMessage = nil
-            try await self.startRoom(client: client)
         }
+    }
+
+    var shareRoomURLString: String {
+        let id = roomId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !id.isEmpty else { return "" }
+        let enc = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? id
+        return "\(Self.backendBaseURLString)/c/\(enc)"
     }
 
     func connect(roomId: String) async {
@@ -134,8 +136,7 @@ final class ChatViewModel: ObservableObject {
 
     private func withClient(_ operation: @escaping (APIClient) async throws -> Void) async {
         do {
-            let client = try APIClient(baseURLString: baseURLString)
-            persistBaseURL()
+            let client = try APIClient(baseURLString: Self.backendBaseURLString)
             try await operation(client)
         } catch {
             errorMessage = error.localizedDescription

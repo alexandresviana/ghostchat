@@ -4,8 +4,12 @@ import SwiftUI
 struct GhostChatIOSApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            NavigationStack {
+                HomeView()
+            }
+            .tint(GhostTheme.lavender)
+            .preferredColorScheme(.dark)
+            .ghostChrome()
         }
     }
 }
-

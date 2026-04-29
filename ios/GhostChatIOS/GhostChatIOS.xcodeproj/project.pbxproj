@@ -11,17 +11,21 @@
 		9407B7363ACA2314B9709C2B /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A3AB1E6C98D124A5D8ECE4 /* ChatViewModel.swift */; };
 		993B63EDB613FFB9FF8B5E58 /* RoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB472C419FFA10B43F3BF507 /* RoomView.swift */; };
 		9CF90E169ACC2B6136D81FC0 /* GhostChatIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B21D5DBC0A3FA3338D86EB /* GhostChatIOSApp.swift */; };
+		A1C3E83E150AE493BAE8C301 /* GhostTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173A6D117CC13378C1E8E86B /* GhostTheme.swift */; };
+		C6112F203CFFE8DAE246A91D /* GhostChatIOS.xcodeproj in Resources */ = {isa = PBXBuildFile; fileRef = B684FBC5D580141C9B59F153 /* GhostChatIOS.xcodeproj */; };
 		D5FA0DB9B889167B06D0A715 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2B4BA8980D8C75579DCC36 /* Models.swift */; };
 		FDCA74E6A96F0CC57FF57C12 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69382311451A15AF87500883 /* APIClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0D005479BB707526E499389D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		173A6D117CC13378C1E8E86B /* GhostTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTheme.swift; sourceTree = "<group>"; };
 		2E2B4BA8980D8C75579DCC36 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		533AB1CEE49FD5EF7CDF120B /* GhostChatIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GhostChatIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64A3AB1E6C98D124A5D8ECE4 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		69382311451A15AF87500883 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		76B21D5DBC0A3FA3338D86EB /* GhostChatIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostChatIOSApp.swift; sourceTree = "<group>"; };
+		B684FBC5D580141C9B59F153 /* GhostChatIOS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = GhostChatIOS.xcodeproj; sourceTree = "<group>"; };
 		FB472C419FFA10B43F3BF507 /* RoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -31,7 +35,9 @@
 			children = (
 				69382311451A15AF87500883 /* APIClient.swift */,
 				64A3AB1E6C98D124A5D8ECE4 /* ChatViewModel.swift */,
+				B684FBC5D580141C9B59F153 /* GhostChatIOS.xcodeproj */,
 				76B21D5DBC0A3FA3338D86EB /* GhostChatIOSApp.swift */,
+				173A6D117CC13378C1E8E86B /* GhostTheme.swift */,
 				0D005479BB707526E499389D /* HomeView.swift */,
 				2E2B4BA8980D8C75579DCC36 /* Models.swift */,
 				FB472C419FFA10B43F3BF507 /* RoomView.swift */,
@@ -56,6 +62,11 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		FE91A9612FA2613600AC2461 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -64,6 +75,7 @@
 			buildConfigurationList = 9B1F3D870F17542FBEF78E54 /* Build configuration list for PBXNativeTarget "GhostChatIOS" */;
 			buildPhases = (
 				7EDC6260EDCF002F8FCDFCDA /* Sources */,
+				DE5B36C06C95AD6DA6B30A25 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -102,12 +114,29 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A19C525C7639115CBDC19C05 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = FE91A9612FA2613600AC2461 /* Products */;
+					ProjectRef = B684FBC5D580141C9B59F153 /* GhostChatIOS.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				C72E1E5662731464EE2A873B /* GhostChatIOS */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DE5B36C06C95AD6DA6B30A25 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C6112F203CFFE8DAE246A91D /* GhostChatIOS.xcodeproj in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7EDC6260EDCF002F8FCDFCDA /* Sources */ = {
@@ -117,6 +146,7 @@
 				FDCA74E6A96F0CC57FF57C12 /* APIClient.swift in Sources */,
 				9407B7363ACA2314B9709C2B /* ChatViewModel.swift in Sources */,
 				9CF90E169ACC2B6136D81FC0 /* GhostChatIOSApp.swift in Sources */,
+				A1C3E83E150AE493BAE8C301 /* GhostTheme.swift in Sources */,
 				0B1954140541E6D9AF68F16B /* HomeView.swift in Sources */,
 				D5FA0DB9B889167B06D0A715 /* Models.swift in Sources */,
 				993B63EDB613FFB9FF8B5E58 /* RoomView.swift in Sources */,
@@ -136,7 +166,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
@@ -160,7 +191,8 @@
 				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = NO;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;

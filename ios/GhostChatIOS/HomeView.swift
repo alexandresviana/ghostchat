@@ -6,84 +6,108 @@ struct HomeView: View {
     @State private var goToRoom = false
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 16) {
-                Text("GhostChat iOS")
-                    .font(.largeTitle.bold())
+        ScrollView {
+            VStack(spacing: 36) {
+                    Image("Logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 120, height: 120)
+                        .shadow(color: GhostTheme.lavender.opacity(0.35), radius: 28, x: 0, y: 8)
+                        .accessibilityLabel("Ghost Chat")
 
-                Text("Sem fluxo de PIX no app. Crie ou entre numa sala.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    VStack(spacing: 12) {
+                        GhostTheme.title("Ghost Chat")
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Backend URL")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    TextField("https://seu-dominio.com", text: $vm.baseURLString)
+                        GhostTheme.bodyText(
+                            "Crie uma sala e partilhe um link único: a conversa é privada e confidencial — só entra quem tiver o link. Texto, emojis e fotos; em 24 horas o acesso expira e os dados são apagados, ou use Encerrar no chat quando quiser.",
+                            opacity: 0.82
+                        )
+                        .padding(.horizontal, 4)
+                    }
+
+                    VStack(spacing: 14) {
+                        Button {
+                            Task { await vm.createRoom() }
+                        } label: {
+                            Group {
+                                if vm.isLoading {
+                                    ProgressView()
+                                        .tint(GhostTheme.foreground)
+                                        .padding(.vertical, 4)
+                                } else {
+                                    Text("Criar sala")
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(GhostPrimaryButtonStyle())
+                        .disabled(vm.isLoading)
+
+                        GhostTheme.bodyText(
+                            "Ligação segura (HTTPS). Sem PIX nesta versão nativa.",
+                            opacity: 0.55
+                        )
+                        .font(.system(size: 13, weight: .regular, design: .rounded))
+                    }
+
+                    VStack(spacing: 12) {
+                        Text("Já tens um ID de sala?")
+                            .font(.system(size: 14, weight: .semibold, design: .rounded))
+                            .foregroundStyle(GhostTheme.lavender.opacity(0.95))
+
+                        TextField(
+                            "",
+                            text: $joinRoomId,
+                            prompt: Text("ID da sala").foregroundStyle(GhostTheme.lavender.opacity(0.45))
+                        )
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled(true)
-                        .keyboardType(.URL)
-                        .padding(10)
-                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10))
-                }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .stroke(GhostTheme.lavender.opacity(0.35), lineWidth: 1)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                        .fill(Color(red: 26 / 255, green: 21 / 255, blue: 48 / 255).opacity(0.55))
+                                )
+                        )
+                        .foregroundStyle(GhostTheme.foreground)
 
-                Button {
-                    Task { await vm.createRoom() }
-                } label: {
-                    if vm.isLoading {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
-                    } else {
-                        Text("Criar nova sala")
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
+                        Button("Entrar na sala") {
+                            vm.roomId = joinRoomId
+                            goToRoom = true
+                        }
+                        .buttonStyle(.borderless)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundStyle(GhostTheme.mint)
+                        .disabled(joinRoomId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     }
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(vm.isLoading)
 
-                Divider().padding(.vertical, 8)
-
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Entrar por ID da sala")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    TextField("roomId", text: $joinRoomId)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled(true)
-                        .padding(10)
-                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10))
-                    Button("Entrar na sala") {
-                        vm.roomId = joinRoomId
-                        goToRoom = true
+                    if let err = vm.errorMessage {
+                        Text(err)
+                            .font(.system(size: 13, weight: .regular, design: .rounded))
+                            .foregroundStyle(Color.red.opacity(0.92))
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 4)
+                            .padding(.horizontal, 12)
                     }
-                    .buttonStyle(.bordered)
-                    .disabled(joinRoomId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                }
-
-                if let err = vm.errorMessage {
-                    Text(err)
-                        .font(.footnote)
-                        .foregroundStyle(.red)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 8)
-                }
-
-                Spacer()
-
             }
-            .padding()
-            .onChange(of: vm.roomId) { _, newValue in
-                if !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    goToRoom = true
-                }
-            }
-            .navigationDestination(isPresented: $goToRoom) {
-                RoomView(vm: vm)
+            .padding(.horizontal, 20)
+            .padding(.top, 32)
+            .padding(.bottom, 48)
+            .frame(maxWidth: 520)
+            .frame(maxWidth: .infinity)
+        }
+        .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(isPresented: $goToRoom) {
+            RoomView(vm: vm)
+        }
+        .onChange(of: vm.roomId) { _, newValue in
+            let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty, !goToRoom {
+                goToRoom = true
             }
         }
     }
 }
-

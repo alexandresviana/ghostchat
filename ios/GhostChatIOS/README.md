@@ -1,39 +1,35 @@
 # GhostChat iOS (SwiftUI)
 
-MVP nativo iOS da aplicacao GhostChat, sem fluxo de pagamento PIX no app.
+MVP nativo iOS alinhado ao **layout e cores da versão web** (`#0d0d1a`, roxo, hortelã/lavanda), **sem fluxo de PIX** no app.
 
-## Escopo desta versao
+## Escopo desta versão
 
 - Criar sala (`POST /api/rooms`)
 - Entrar em sala por ID
-- Chat de texto
-- Upload de imagem para sala
-- Indicador de digitacao
+- Chat de texto + fotos
+- Indicador de digitação
 - Encerrar conversa
+- **Branding:** fundo escuro, botão primário roxo (estilo «Abrir painel» na home web)
+- **Ícone do app** a partir do `public/ghost-logo.svg` (PNG 1024 gerado para o AppIcon)
+- **Launch screen** (`LaunchScreen.storyboard`) com logótipo centrado e fundo `#0d0d1a`
 
-## Requisitos
+## Abrir o projeto
 
-- Xcode 15+ (recomendado Xcode 16+)
-- iOS 17+
-- Backend GhostChat em execucao e acessivel via HTTPS (ou HTTP em rede local configurada no iOS)
+Na raiz `ios/GhostChatIOS/`:
 
-## Como iniciar
+```bash
+xcodegen generate
+open GhostChatIOS.xcodeproj
+```
 
-1. Abra o Xcode e crie um novo projeto **iOS App (SwiftUI)** chamado `GhostChatIOS`.
-2. Dentro do projeto criado, substitua os arquivos Swift pelos arquivos desta pasta:
-   - `GhostChatIOSApp.swift`
-   - `Models.swift`
-   - `APIClient.swift`
-   - `ChatViewModel.swift`
-   - `HomeView.swift`
-   - `RoomView.swift`
-3. Defina o deployment target para iOS 17.
-4. Rode no simulador.
+Requisitos: **Xcode 15+**, **iOS 17+**, e **XcodeGen** (`brew install xcodegen`) para regenerar o `.xcodeproj` a partir de `project.yml`.
 
-## Observacoes
+## Backend
 
-- O app nao mostra PIX nem tela de planos.
-- A criacao de sala depende das regras do backend:
-  - Se houver sessao/tokens validos no servidor, cria normalmente.
-  - Se o backend exigir pagamento para criar sala e nao houver sessao, a API retorna 402.
-- Mesmo sem criar sala, o app pode entrar e conversar em salas existentes via ID.
+Fixo em código: `ChatViewModel.backendBaseURLString` (HTTPS de produção).
+
+## Notas
+
+- O app não mostra PIX nem ecrã de planos.
+- Criar sala depende das regras do servidor (ex.: 402 se não houver entitlement).
+- Ícones/registo: o `AppIcon` usa imagem **1024×1024** gerada a partir do mesmo SVG da web; para publicar na App Store, confirme no Xcode **Assets** se o conjunto de ícones está válido para a build alvo.

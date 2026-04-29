@@ -16,15 +16,21 @@ targets:
         excludes:
           - README.md
           - project.yml
+          - Assets.xcassets
+          - LaunchScreen.storyboard
+    resources:
+      - path: Assets.xcassets
+      - path: LaunchScreen.storyboard
     settings:
       base:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
-        INFOPLIST_KEY_UILaunchScreen_Generation: true
         INFOPLIST_KEY_CFBundleDisplayName: GhostChat
         INFOPLIST_KEY_LSRequiresIPhoneOS: true
         INFOPLIST_KEY_UIRequiresFullScreen: false
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UILaunchScreen_Generation: false
+        INFOPLIST_KEY_UILaunchStoryboardName: LaunchScreen
         DEVELOPMENT_TEAM: ""
         GENERATE_INFOPLIST_FILE: true
         TARGETED_DEVICE_FAMILY: "1,2"
