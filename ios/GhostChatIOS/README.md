@@ -4,7 +4,7 @@ MVP nativo iOS alinhado ao **layout e cores da versão web** (`#0d0d1a`, roxo, h
 
 ## Escopo desta versão
 
-- Criar sala (`POST /api/rooms`)
+- Criar sala (`POST /api/rooms/ios` com segredo no header)
 - Entrar em sala por ID
 - Chat de texto + fotos
 - Indicador de digitação

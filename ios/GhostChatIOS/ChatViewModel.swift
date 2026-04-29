@@ -3,7 +3,7 @@ import UIKit
 
 @MainActor
 final class ChatViewModel: ObservableObject {
-    /// Base HTTPS do site/API: requisições relativas como `/api/rooms`, `/api/rooms/{id}/messages`, etc.
+    /// Base HTTPS do site/API: criar sala em `/api/rooms/ios`; resto em `/api/rooms/{id}/...`.
     static let backendBaseURLString = "https://ghosth.chat"
 
     @Published var roomId: String = ""

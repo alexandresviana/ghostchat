@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdminSessionActive } from "@/lib/admin-request";
-import { bypassPayment, getIosApiSecret } from "@/lib/env-payment";
-import { getIosCredentialFromRequest } from "@/lib/ios-request-secret";
+import { bypassPayment } from "@/lib/env-payment";
 import { hasBunnySqlConfig } from "@/lib/env-bunny";
 import { consumeLinkAndCreateRoom } from "@/lib/payment-service";
 import { getSessionEmailFromRequest } from "@/lib/request-session";
@@ -9,6 +8,10 @@ import { createRoom } from "@/lib/room-service";
 
 export const runtime = "nodejs";
 
+/**
+ * Criar sala: desenvolvimento (bypass), admin, ou painel com sessão paga.
+ * App iOS nativo: use `POST /api/rooms/ios` com o segredo configurado.
+ */
 export async function POST(request: Request) {
   try {
     if (bypassPayment()) {
@@ -19,26 +22,6 @@ export async function POST(request: Request) {
     if (await isAdminSessionActive()) {
       const room = await createRoom();
       return NextResponse.json({ room });
-    }
-
-    const expectedSecret = getIosApiSecret();
-    const sentCredential = getIosCredentialFromRequest(request);
-    if (
-      expectedSecret &&
-      sentCredential &&
-      sentCredential === expectedSecret
-    ) {
-      const room = await createRoom();
-      return NextResponse.json({ room });
-    }
-    if (
-      process.env.NODE_ENV === "development" &&
-      sentCredential &&
-      !expectedSecret
-    ) {
-      console.warn(
-        "[POST /api/rooms] Cabeçalho iOS presente mas GHOSTCHAT_IOS_API_SECRET não está definido no servidor.",
-      );
     }
 
     if (!hasBunnySqlConfig()) {

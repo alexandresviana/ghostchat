@@ -64,7 +64,7 @@ final class APIClient {
 
     func createRoom() async throws -> RoomDTO {
         let response: CreateRoomResponse = try await request(
-            path: "/api/rooms",
+            path: "/api/rooms/ios",
             method: "POST",
             body: Optional<String>.none
         )
@@ -210,7 +210,7 @@ final class APIClient {
         return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
     }
 
-    /// Cabeçalhos aceitos em `app/api/rooms/route.ts` (também `Authorization: Bearer` se o proxy remover o X-*).
+    /// Cabeçalhos aceitos em `app/api/rooms/ios/route.ts` e rotas `/api/rooms/...` (também `Authorization: Bearer` se o proxy remover o X-*).
     private func applyIosNativeSecret(_ request: inout URLRequest) {
         let trimmed = IOSNativeAPISecrets.resolvedSecret()
         guard !trimmed.isEmpty else { return }
