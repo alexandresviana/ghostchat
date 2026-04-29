@@ -1,5 +1,10 @@
 import Foundation
 
+/// Opcional — definir igual a `GHOSTCHAT_IOS_API_SECRET` na Vercel (não commits com segredo real em ramos públicos).
+private enum IOSNativeAPISecrets {
+    static let serverSharedSecret: String = ""
+}
+
 enum APIClientError: LocalizedError {
     case invalidBaseURL
     case invalidResponse
@@ -103,6 +108,7 @@ final class APIClient {
     func uploadImage(roomId: String, imageData: Data, fileName: String = "photo.jpg") async throws -> String {
         var request = URLRequest(url: fullURL(path: "/api/rooms/\(encode(roomId))/upload"))
         request.httpMethod = "POST"
+        applyIosNativeSecret(&request)
 
         let boundary = "Boundary-\(UUID().uuidString)"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
@@ -143,6 +149,7 @@ final class APIClient {
     ) async throws -> T {
         var request = URLRequest(url: fullURL(path: path))
         request.httpMethod = method
+        applyIosNativeSecret(&request)
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         if let body {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -179,6 +186,13 @@ final class APIClient {
 
     private func encode(_ value: String) -> String {
         value.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? value
+    }
+
+    /// Permite criar sala no app quando o servidor configura `GHOSTCHAT_IOS_API_SECRET`.
+    private func applyIosNativeSecret(_ request: inout URLRequest) {
+        let trimmed = IOSNativeAPISecrets.serverSharedSecret.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        request.setValue(trimmed, forHTTPHeaderField: "X-GhostChat-iOS-Secret")
     }
 }
 

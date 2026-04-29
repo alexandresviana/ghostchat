@@ -13,7 +13,7 @@ const fromEnv =
     .filter(Boolean) ?? [];
 
 /** HMR/WebSocket em dev quando o browser usa um host que não é localhost (túnel, Fastly, etc.). */
-const defaultTunnelHosts = ["ghostchat.fastlyf.com"];
+const defaultTunnelHosts = ["ghosth.chat"];
 
 const nextConfig: NextConfig = {
   /** Imagem Docker mínima (`Dockerfile`) — gera `.next/standalone`. */

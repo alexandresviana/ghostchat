@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdminSessionActive } from "@/lib/admin-request";
-import { bypassPayment } from "@/lib/env-payment";
+import { bypassPayment, getIosApiSecret } from "@/lib/env-payment";
 import { hasBunnySqlConfig } from "@/lib/env-bunny";
 import { consumeLinkAndCreateRoom } from "@/lib/payment-service";
 import { getSessionEmailFromRequest } from "@/lib/request-session";
@@ -16,6 +16,13 @@ export async function POST(request: Request) {
     }
 
     if (await isAdminSessionActive()) {
+      const room = await createRoom();
+      return NextResponse.json({ room });
+    }
+
+    const expectedSecret = getIosApiSecret();
+    const headerSecret = request.headers.get("x-ghostchat-ios-secret")?.trim();
+    if (expectedSecret && headerSecret === expectedSecret) {
       const room = await createRoom();
       return NextResponse.json({ room });
     }

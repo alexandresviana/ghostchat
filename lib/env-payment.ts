@@ -25,6 +25,12 @@ export function bypassPayment(): boolean {
   );
 }
 
+/** Segredo opcional iguala `X-GhostChat-iOS-Secret`; permite criar salas no app iOS sem cookie de sessão/PIX quando definido em produção. */
+export function getIosApiSecret(): string | undefined {
+  const s = process.env.GHOSTCHAT_IOS_API_SECRET?.trim();
+  return s || undefined;
+}
+
 /** Permite POST /api/entitlement/free-test — 1 link grátis (só ative em staging/testes). */
 export function freeTestLinkEnabled(): boolean {
   return (

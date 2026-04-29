@@ -3,7 +3,9 @@ import UIKit
 
 @MainActor
 final class ChatViewModel: ObservableObject {
-    static let backendBaseURLString = "https://ghostchat.fastlyf.com"
+    /// Base HTTPS do site/API (mesmo host que o Next em produção): pedidos relativos tipo `/api/rooms`, `/api/rooms/{id}/messages`, etc.
+    /// HTTP 502 costuma vir do proxy/hosting (origem offline ou erro no servidor), não de um path inventado no cliente.
+    static let backendBaseURLString = "https://ghosth.chat"
 
     @Published var roomId: String = ""
     @Published var messages: [MessageDTO] = []
