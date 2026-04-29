@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS messages (
   media_url TEXT,
   media_kind TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  -- apelido local opcional (sem login)
+  -- id do cliente que enviou (UUID); antigo antes do app também pode ser NULL
   sender_label TEXT
 );
 

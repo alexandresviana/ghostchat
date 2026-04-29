@@ -26,7 +26,7 @@
 		0D005479BB707526E499389D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		173A6D117CC13378C1E8E86B /* GhostTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTheme.swift; sourceTree = "<group>"; };
 		2E2B4BA8980D8C75579DCC36 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		533AB1CEE49FD5EF7CDF120B /* GhostChatIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GhostChatIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		533AB1CEE49FD5EF7CDF120B /* GhostChatOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GhostChatOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64A3AB1E6C98D124A5D8ECE4 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		6616C74063EC26FED49EB5EA /* EntrySplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntrySplashView.swift; sourceTree = "<group>"; };
 		69382311451A15AF87500883 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
@@ -72,7 +72,7 @@
 		A19C525C7639115CBDC19C05 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				533AB1CEE49FD5EF7CDF120B /* GhostChatIOS.app */,
+				533AB1CEE49FD5EF7CDF120B /* GhostChatOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,9 +80,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C72E1E5662731464EE2A873B /* GhostChatIOS */ = {
+		C72E1E5662731464EE2A873B /* GhostChatOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9B1F3D870F17542FBEF78E54 /* Build configuration list for PBXNativeTarget "GhostChatIOS" */;
+			buildConfigurationList = 9B1F3D870F17542FBEF78E54 /* Build configuration list for PBXNativeTarget "GhostChatOS" */;
 			buildPhases = (
 				DE5B36C06C95AD6DA6B30A25 /* Resources */,
 				7EDC6260EDCF002F8FCDFCDA /* Sources */,
@@ -91,11 +91,11 @@
 			);
 			dependencies = (
 			);
-			name = GhostChatIOS;
+			name = GhostChatOS;
 			packageProductDependencies = (
 			);
 			productName = GhostChatIOS;
-			productReference = 533AB1CEE49FD5EF7CDF120B /* GhostChatIOS.app */;
+			productReference = 533AB1CEE49FD5EF7CDF120B /* GhostChatOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -107,7 +107,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 			};
-			buildConfigurationList = F556F8A89755AC0CECA51F01 /* Build configuration list for PBXProject "GhostChatI" */;
+			buildConfigurationList = F556F8A89755AC0CECA51F01 /* Build configuration list for PBXProject "GhostChat" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -121,7 +121,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C72E1E5662731464EE2A873B /* GhostChatIOS */,
+				C72E1E5662731464EE2A873B /* GhostChatOS */,
 			);
 		};
 /* End PBXProject section */
@@ -183,6 +183,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ghosth.chat;
+				PRODUCT_NAME = GhostChatOS;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -211,6 +213,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ghosth.chat;
+				PRODUCT_NAME = GhostChatOS;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -340,7 +344,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9B1F3D870F17542FBEF78E54 /* Build configuration list for PBXNativeTarget "GhostChatIOS" */ = {
+		9B1F3D870F17542FBEF78E54 /* Build configuration list for PBXNativeTarget "GhostChatOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3DE274D1ED610650052E9453 /* Debug */,
@@ -349,7 +353,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		F556F8A89755AC0CECA51F01 /* Build configuration list for PBXProject "GhostChatI" */ = {
+		F556F8A89755AC0CECA51F01 /* Build configuration list for PBXProject "GhostChat" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0D986903A0A0F624E6C1571 /* Debug */,

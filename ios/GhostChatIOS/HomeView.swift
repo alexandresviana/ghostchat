@@ -19,7 +19,7 @@ struct HomeView: View {
                         GhostTheme.title("Ghost Chat")
 
                         GhostTheme.bodyText(
-                            "Crie uma sala e partilhe um link único: a conversa é privada e confidencial — só entra quem tiver o link. Texto, emojis e fotos; em 24 horas o acesso expira e os dados são apagados, ou use Encerrar no chat quando quiser.",
+                            "Crie uma sala e compartilhe um link único: a conversa é privada e confidencial — só entra quem tiver o link. Texto, emojis e fotos; em 24 horas o acesso expira e os dados são apagados, ou use Encerrar no chat quando quiser.",
                             opacity: 0.82
                         )
                         .padding(.horizontal, 4)
@@ -44,14 +44,14 @@ struct HomeView: View {
                         .disabled(vm.isLoading)
 
                         GhostTheme.bodyText(
-                            "Ligação segura (HTTPS). Sem PIX nesta versão nativa.",
+                            "Conexão segura.",
                             opacity: 0.55
                         )
                         .font(.system(size: 13, weight: .regular, design: .rounded))
                     }
 
                     VStack(spacing: 12) {
-                        Text("Já tens um ID de sala?")
+                        Text("Já tem um ID da sala?")
                             .font(.system(size: 14, weight: .semibold, design: .rounded))
                             .foregroundStyle(GhostTheme.lavender.opacity(0.95))
 
@@ -101,7 +101,7 @@ struct HomeView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .navigationDestination(isPresented: $goToRoom) {
-            RoomView(vm: vm)
+            RoomView(vm: vm, isPresented: $goToRoom)
         }
         .onChange(of: vm.roomId) { _, newValue in
             let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)

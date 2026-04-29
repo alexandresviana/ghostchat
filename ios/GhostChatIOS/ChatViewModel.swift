@@ -3,8 +3,7 @@ import UIKit
 
 @MainActor
 final class ChatViewModel: ObservableObject {
-    /// Base HTTPS do site/API (mesmo host que o Next em produção): pedidos relativos tipo `/api/rooms`, `/api/rooms/{id}/messages`, etc.
-    /// HTTP 502 costuma vir do proxy/hosting (origem offline ou erro no servidor), não de um path inventado no cliente.
+    /// Base HTTPS do site/API: requisições relativas como `/api/rooms`, `/api/rooms/{id}/messages`, etc.
     static let backendBaseURLString = "https://ghosth.chat"
 
     @Published var roomId: String = ""
@@ -13,10 +12,13 @@ final class ChatViewModel: ObservableObject {
     @Published var othersTyping: Bool = false
     @Published var isLoading: Bool = false
     @Published var ended: Bool = false
+    @Published var wiping: Bool = false
     @Published var errorMessage: String?
 
     let clientId: String
     private var pollTask: Task<Void, Never>?
+    private var hadSuccessfulRoomLoad = false
+    private var roomExpiresAt: Date?
 
     init() {
         let key = "ghostchat.clientId"
@@ -36,6 +38,7 @@ final class ChatViewModel: ObservableObject {
             let room = try await client.createRoom()
             self.roomId = room.id
             self.ended = false
+            self.wiping = false
             self.errorMessage = nil
         }
     }
@@ -47,8 +50,15 @@ final class ChatViewModel: ObservableObject {
         return "\(Self.backendBaseURLString)/c/\(enc)"
     }
 
+    func isFromCurrentClient(_ message: MessageDTO) -> Bool {
+        guard let sender = message.clientId, !sender.isEmpty else { return false }
+        return sender == clientId
+    }
+
     func connect(roomId: String) async {
-        self.roomId = roomId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmed = roomId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        self.roomId = trimmed
         await withClient { [self] client in
             try await self.startRoom(client: client)
         }
@@ -59,7 +69,7 @@ final class ChatViewModel: ObservableObject {
         let text = messageText
         messageText = ""
         await withClient { [self] client in
-            guard !self.roomId.isEmpty, !self.ended else { return }
+            guard !self.roomId.isEmpty, !self.ended, !self.wiping else { return }
             _ = try await client.sendMessage(roomId: self.roomId, clientId: self.clientId, text: text, mediaUrl: nil)
             try await self.loadMessages(client: client)
         }
@@ -68,7 +78,7 @@ final class ChatViewModel: ObservableObject {
     func sendImage(_ image: UIImage) async {
         guard let jpeg = image.jpegData(compressionQuality: 0.82) else { return }
         await withClient { [self] client in
-            guard !self.roomId.isEmpty, !self.ended else { return }
+            guard !self.roomId.isEmpty, !self.ended, !self.wiping else { return }
             let url = try await client.uploadImage(roomId: self.roomId, imageData: jpeg)
             _ = try await client.sendMessage(roomId: self.roomId, clientId: self.clientId, text: "📷", mediaUrl: url)
             try await self.loadMessages(client: client)
@@ -77,7 +87,7 @@ final class ChatViewModel: ObservableObject {
 
     func setTyping(active: Bool) async {
         await withClient { [self] client in
-            guard !self.roomId.isEmpty, !self.ended else { return }
+            guard !self.roomId.isEmpty, !self.ended, !self.wiping else { return }
             try await client.sendTyping(roomId: self.roomId, clientId: self.clientId, active: active)
         }
     }
@@ -86,9 +96,24 @@ final class ChatViewModel: ObservableObject {
         await withClient { [self] client in
             guard !self.roomId.isEmpty else { return }
             try await client.endRoom(roomId: self.roomId)
-            self.ended = true
             self.stopPolling()
+            self.wiping = true
         }
+    }
+
+    /// Limpa estado da sala ao sair da navegação (voltar, wipe concluído, etc.).
+    func clearRoomNavigationState() {
+        stopPolling()
+        Task { await setTyping(active: false) }
+        wiping = false
+        ended = false
+        hadSuccessfulRoomLoad = false
+        roomExpiresAt = nil
+        roomId = ""
+        messages = []
+        othersTyping = false
+        messageText = ""
+        errorMessage = nil
     }
 
     func stopPolling() {
@@ -100,11 +125,24 @@ final class ChatViewModel: ObservableObject {
         pollTask?.cancel()
     }
 
+    private func parseExpiresAt(_ iso: String?) -> Date? {
+        guard let iso, !iso.isEmpty else { return nil }
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let d = f.date(from: iso) { return d }
+        f.formatOptions = [.withInternetDateTime]
+        return f.date(from: iso)
+    }
+
     private func startRoom(client: APIClient) async throws {
-        _ = try await client.roomInfo(roomId: roomId)
+        let info = try await client.roomInfo(roomId: roomId)
+        roomExpiresAt = parseExpiresAt(info.room.expiresAt)
         errorMessage = nil
         ended = false
+        wiping = false
         try await loadMessages(client: client)
+        if ended || wiping { return }
+        hadSuccessfulRoomLoad = true
         startPolling(client: client)
     }
 
@@ -113,9 +151,17 @@ final class ChatViewModel: ObservableObject {
             let payload = try await client.listMessages(roomId: roomId, clientId: clientId)
             messages = payload.messages
             othersTyping = payload.othersTyping ?? false
+            if let exp = roomExpiresAt, Date() >= exp, !wiping {
+                wiping = true
+                stopPolling()
+            }
         } catch let APIClientError.server(_, status) where status == 404 {
-            ended = true
             stopPolling()
+            if hadSuccessfulRoomLoad {
+                wiping = true
+            } else {
+                ended = true
+            }
         } catch {
             throw error
         }
@@ -145,4 +191,3 @@ final class ChatViewModel: ObservableObject {
         }
     }
 }
-

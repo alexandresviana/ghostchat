@@ -1,8 +1,21 @@
 import Foundation
 
-/// Opcional — definir igual a `GHOSTCHAT_IOS_API_SECRET` na Vercel (não commits com segredo real em ramos públicos).
+/// Mesmo valor que `GHOSTCHAT_IOS_API_SECRET` no servidor.
+/// 1) Xcode → Product → Scheme → Edit Scheme → Run → Environment: `GHOSTCHAT_IOS_SECRET` ou `GHOSTCHAT_IOS_API_SECRET`
+/// 2) Ou preencher `inlineReleaseSecret` abaixo só para Release (evitar em repos públicos).
 private enum IOSNativeAPISecrets {
-    static let serverSharedSecret: String = ""
+    private static let inlineReleaseSecret: String = ""
+
+    static func resolvedSecret() -> String {
+        for key in ["GHOSTCHAT_IOS_SECRET", "GHOSTCHAT_IOS_API_SECRET"] {
+            if let v = ProcessInfo.processInfo.environment[key]?.trimmingCharacters(in: .whitespacesAndNewlines),
+               !v.isEmpty {
+                return v
+            }
+        }
+        let inline = inlineReleaseSecret.trimmingCharacters(in: .whitespacesAndNewlines)
+        return inline
+    }
 }
 
 enum APIClientError: LocalizedError {
@@ -14,9 +27,9 @@ enum APIClientError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidBaseURL:
-            return "URL base invalida."
+            return "URL base inválida."
         case .invalidResponse:
-            return "Resposta invalida do servidor."
+            return "Resposta inválida do servidor."
         case .server(let message, let status):
             return "\(message) (HTTP \(status))"
         case .decoding:
@@ -32,10 +45,9 @@ final class APIClient {
         return d
     }()
 
+    /// Mesmas chaves que o fetch no navegador (`clientId`, `mediaUrl`) — não usar snake_case no body.
     private let jsonEncoder: JSONEncoder = {
-        let e = JSONEncoder()
-        e.keyEncodingStrategy = .convertToSnakeCase
-        return e
+        JSONEncoder()
     }()
 
     let baseURL: URL
@@ -65,7 +77,7 @@ final class APIClient {
 
     func listMessages(roomId: String, clientId: String) async throws -> MessagesResponse {
         try await request(
-            path: "/api/rooms/\(encode(roomId))/messages?clientId=\(encode(clientId))"
+            path: "/api/rooms/\(encode(roomId))/messages?clientId=\(encodeQuery(clientId))"
         )
     }
 
@@ -177,22 +189,33 @@ final class APIClient {
         return .server(message: "Erro do servidor.", status: status)
     }
 
+    /// Junta o caminho opcionalmente com `?query=…` ao host. **Não** usar `URL.appending(path:)` aqui:
+    /// essa API codifica `?` como `%3F`, e `/messages%3FclientId=` retorna 404.
     private func fullURL(path: String) -> URL {
-        if path.hasPrefix("/") {
-            return baseURL.appending(path: String(path.dropFirst()))
+        if path.hasPrefix("//") || path.lowercased().hasPrefix("/http") {
+            return URL(string: path) ?? baseURL
         }
-        return baseURL.appending(path: path)
+        if let u = URL(string: path.hasPrefix("/") ? path : "/" + path, relativeTo: baseURL)?.absoluteURL {
+            return u
+        }
+        return baseURL
     }
 
     private func encode(_ value: String) -> String {
         value.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? value
     }
 
-    /// Permite criar sala no app quando o servidor configura `GHOSTCHAT_IOS_API_SECRET`.
+    private func encodeQuery(_ value: String) -> String {
+        let allowed = CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "&+="))
+        return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
+    }
+
+    /// Cabeçalhos aceitos em `app/api/rooms/route.ts` (também `Authorization: Bearer` se o proxy remover o X-*).
     private func applyIosNativeSecret(_ request: inout URLRequest) {
-        let trimmed = IOSNativeAPISecrets.serverSharedSecret.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmed = IOSNativeAPISecrets.resolvedSecret()
         guard !trimmed.isEmpty else { return }
         request.setValue(trimmed, forHTTPHeaderField: "X-GhostChat-iOS-Secret")
+        request.setValue("Bearer \(trimmed)", forHTTPHeaderField: "Authorization")
     }
 }
 

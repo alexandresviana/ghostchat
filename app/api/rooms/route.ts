@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdminSessionActive } from "@/lib/admin-request";
 import { bypassPayment, getIosApiSecret } from "@/lib/env-payment";
+import { getIosCredentialFromRequest } from "@/lib/ios-request-secret";
 import { hasBunnySqlConfig } from "@/lib/env-bunny";
 import { consumeLinkAndCreateRoom } from "@/lib/payment-service";
 import { getSessionEmailFromRequest } from "@/lib/request-session";
@@ -21,10 +22,23 @@ export async function POST(request: Request) {
     }
 
     const expectedSecret = getIosApiSecret();
-    const headerSecret = request.headers.get("x-ghostchat-ios-secret")?.trim();
-    if (expectedSecret && headerSecret === expectedSecret) {
+    const sentCredential = getIosCredentialFromRequest(request);
+    if (
+      expectedSecret &&
+      sentCredential &&
+      sentCredential === expectedSecret
+    ) {
       const room = await createRoom();
       return NextResponse.json({ room });
+    }
+    if (
+      process.env.NODE_ENV === "development" &&
+      sentCredential &&
+      !expectedSecret
+    ) {
+      console.warn(
+        "[POST /api/rooms] Cabeçalho iOS presente mas GHOSTCHAT_IOS_API_SECRET não está definido no servidor.",
+      );
     }
 
     if (!hasBunnySqlConfig()) {

@@ -8,7 +8,7 @@ type GhostAvatarProps = {
 };
 
 /** Área de desenho base (SVG 220×250 + halo).
- *  PNGs iOS: colocar arte final em `scripts/ghost-reference.png` e correr `npm run export:ios-ghost-pngs` (fallback: `scripts/ghost-avatar-ios.svg`).
+ *  PNG logo in-app iOS: `public/ghost-logo.svg` (transparente) → `npm run export:ios-ghost-pngs`. Ícone da app: `scripts/ghost-reference.png`.
  */
 const BASE_W = 220;
 const BASE_H = 260;

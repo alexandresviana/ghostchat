@@ -27,6 +27,8 @@ struct MessageDTO: Codable, Identifiable {
     let mediaUrl: String?
     let createdAt: String?
     let displayTime: String?
+    /// Igual ao UUID em `ChatViewModel.clientId` quando a mensagem é deste dispositivo.
+    let clientId: String?
 }
 
 struct MessagesResponse: Codable {

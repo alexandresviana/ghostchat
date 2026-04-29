@@ -23,5 +23,6 @@ struct RootShellView: View {
         .tint(GhostTheme.lavender)
         .preferredColorScheme(.dark)
         .ghostChrome()
+        .screenRecordingShield()
     }
 }

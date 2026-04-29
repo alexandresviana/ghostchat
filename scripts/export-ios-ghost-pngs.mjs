@@ -1,8 +1,7 @@
 /**
  * PNGs para `Logo.imageset` e `AppIcon.appiconset`:
- * - Se existir `scripts/ghost-reference.png` (captura/export do mascot original),
- *   usa esse ficheiro (melhor equivalência ao design final).
- * - Caso contrário, faz fallback para `ghost-avatar-ios.svg`.
+ * - Logo (in-app): `public/ghost-logo.svg` → PNG com alpha (sem quadrado de fundo).
+ * - App Icon: `scripts/ghost-reference.png` se existir, senão fallback SVG composto.
  */
 import fs from "fs";
 import path from "path";
@@ -11,7 +10,9 @@ import sharp from "sharp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const refPath = path.join(__dirname, "ghost-reference.png");
-const svgPath = path.join(__dirname, "ghost-avatar-ios.svg");
+const fallbackSvgPath = path.join(__dirname, "ghost-avatar-ios.svg");
+/** SVG quadrado 120×120; fundo transparente no catálogo iOS. */
+const logoSvgPath = path.join(__dirname, "..", "public", "ghost-logo.svg");
 
 const ASSETS = path.join(__dirname, "..", "ios", "GhostChatIOS", "Assets.xcassets");
 const logoDir = path.join(ASSETS, "Logo.imageset");
@@ -21,26 +22,16 @@ const appIconDir = path.join(ASSETS, "AppIcon.appiconset");
 const THEME_BG = { r: 13, g: 13, b: 26, alpha: 1 };
 
 async function logoPng(px) {
-  const useRaster = fs.existsSync(refPath);
-  if (useRaster) {
-    return sharp(refPath)
-      .resize(px, px, {
-        fit: "contain",
-        position: "centre",
-        background: THEME_BG,
-        kernel: sharp.kernel.lanczos3,
-      })
-      .png()
-      .toBuffer();
-  }
-  const svgBuffer = fs.readFileSync(svgPath);
+  const svgSource = fs.existsSync(logoSvgPath) ? logoSvgPath : fallbackSvgPath;
+  const svgBuffer = fs.readFileSync(svgSource);
   return sharp(svgBuffer)
     .resize(px, px, {
       fit: "contain",
       position: "centre",
       background: { r: 0, g: 0, b: 0, alpha: 0 },
     })
-    .png()
+    .ensureAlpha()
+    .png({ compressionLevel: 9 })
     .toBuffer();
 }
 
@@ -67,7 +58,9 @@ async function buildMasterIcon1024() {
       .toBuffer();
   }
 
-  const svgBuffer = fs.readFileSync(svgPath);
+  const iconSvg =
+    fs.existsSync(fallbackSvgPath) ? fallbackSvgPath : logoSvgPath;
+  const svgBuffer = fs.readFileSync(iconSvg);
   const ghostLayer = await sharp(svgBuffer)
     .resize(700, 700, {
       fit: "contain",
@@ -90,8 +83,13 @@ async function buildMasterIcon1024() {
 }
 
 async function main() {
-  const src = fs.existsSync(refPath) ? "ghost-reference.png" : "ghost-avatar-ios.svg";
-  console.log("source:", src);
+  const logoSrc = fs.existsSync(logoSvgPath) ? "public/ghost-logo.svg" : "scripts/ghost-avatar-ios.svg";
+  const iconSrc = fs.existsSync(refPath)
+    ? "scripts/ghost-reference.png"
+    : fs.existsSync(fallbackSvgPath)
+      ? "scripts/ghost-avatar-ios.svg"
+      : "public/ghost-logo.svg";
+  console.log("logo source:", logoSrc, "| app icon source:", iconSrc);
 
   for (const [name, px] of [
     ["logo-120.png", 120],

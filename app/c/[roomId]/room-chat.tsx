@@ -23,6 +23,8 @@ type ApiMessage = {
   body: string;
   mediaUrl: string | null;
   createdAt: string;
+  /** Quem enviou (UUID do cliente); mensagens antigas podem vir sem o campo. */
+  clientId?: string | null;
   /** Hora já formatada no servidor (HH:MM) — útil se o JS do cliente estiver em cache antigo */
   displayTime?: string;
   /** Alguns proxies serializam em snake_case */
@@ -437,7 +439,10 @@ export function RoomChat({ roomId }: { roomId: string }) {
               imagePriority={
                 Boolean(m.mediaUrl) && i === messages.length - 1
               }
-              sent={myMessageIds.has(m.id)}
+              sent={
+                Boolean(clientId && m.clientId && m.clientId === clientId) ||
+                myMessageIds.has(m.id)
+              }
               time={
                 m.displayTime?.trim() ||
                 formatMessageTime(getMessageCreatedAt(m))

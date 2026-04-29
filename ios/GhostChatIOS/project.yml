@@ -17,7 +17,7 @@ targets:
           - README.md
           - project.yml
           - Assets.xcassets
-          - GhostChatIOS.xcodeproj
+          - GhostChat.xcodeproj
           - "*.xcworkspace"
     resources:
       - path: Assets.xcassets
@@ -25,6 +25,7 @@ targets:
       base:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
+        INFOPLIST_KEY_CFBundleDevelopmentRegion: pt-BR
         INFOPLIST_KEY_CFBundleDisplayName: GhostChat
         INFOPLIST_KEY_LSRequiresIPhoneOS: true
         INFOPLIST_KEY_UIRequiresFullScreen: false

@@ -64,7 +64,7 @@ struct EntrySplashView: View {
                         .font(.system(size: 40, weight: .semibold, design: .rounded))
                         .foregroundStyle(GhostTheme.foreground)
 
-                    Text("Conversas privadas, sem perfis públicos.\nSó quem tiver o link entra na sala.")
+                    Text("Conversas privadas, sem perfis públicos.\nSomente quem tiver o link entra na sala.")
                         .font(.system(size: 16, weight: .regular, design: .rounded))
                         .foregroundStyle(GhostTheme.foreground.opacity(0.78))
                         .multilineTextAlignment(.center)

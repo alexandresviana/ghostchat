@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C72E1E5662731464EE2A873B"
-               BuildableName = "GhostChatIOS.app"
-               BlueprintName = "GhostChatIOS"
-               ReferencedContainer = "container:GhostChatI.xcodeproj">
+               BuildableName = "GhostChatOS.app"
+               BlueprintName = "GhostChatOS"
+               ReferencedContainer = "container:GhostChat.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C72E1E5662731464EE2A873B"
-            BuildableName = "GhostChatIOS.app"
-            BlueprintName = "GhostChatIOS"
-            ReferencedContainer = "container:GhostChatI.xcodeproj">
+            BuildableName = "GhostChatOS.app"
+            BlueprintName = "GhostChatOS"
+            ReferencedContainer = "container:GhostChat.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -69,9 +69,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C72E1E5662731464EE2A873B"
-            BuildableName = "GhostChatIOS.app"
-            BlueprintName = "GhostChatIOS"
-            ReferencedContainer = "container:GhostChatI.xcodeproj">
+            BuildableName = "GhostChatOS.app"
+            BlueprintName = "GhostChatOS"
+            ReferencedContainer = "container:GhostChat.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

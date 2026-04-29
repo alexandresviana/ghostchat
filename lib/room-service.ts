@@ -25,6 +25,8 @@ export type MessageDTO = {
   mediaUrl: string | null;
   mediaKind: string | null;
   createdAt: string;
+  /** Quem enviou (UUID do cliente). Coluna SQL: `sender_label`. */
+  clientId: string | null;
 };
 
 function useSql(): boolean {
@@ -304,7 +306,7 @@ export async function listMessages(roomId: string): Promise<MessageDTO[] | null>
   if (useSql()) {
     const db = await dbReady();
     const res = await db.execute({
-      sql: `SELECT id, room_id, body, media_url, media_kind, created_at
+      sql: `SELECT id, room_id, body, media_url, media_kind, created_at, sender_label
             FROM messages WHERE room_id = ? ORDER BY created_at ASC`,
       args: [roomId],
     });
@@ -315,6 +317,10 @@ export async function listMessages(roomId: string): Promise<MessageDTO[] | null>
       mediaUrl: row.media_url != null ? String(row.media_url) : null,
       mediaKind: row.media_kind != null ? String(row.media_kind) : null,
       createdAt: String(row.created_at),
+      clientId:
+        row.sender_label != null && String(row.sender_label).trim() !== ""
+          ? String(row.sender_label)
+          : null,
     }));
   }
   const r = memoryRooms.get(roomId);
@@ -350,7 +356,7 @@ export async function listMessagesAndOthersTyping(
     const db = await dbReady();
     const [msgRes, typRes] = await Promise.all([
       db.execute({
-        sql: `SELECT id, room_id, body, media_url, media_kind, created_at
+        sql: `SELECT id, room_id, body, media_url, media_kind, created_at, sender_label
               FROM messages WHERE room_id = ? ORDER BY created_at ASC`,
         args: [roomId],
       }),
@@ -368,6 +374,10 @@ export async function listMessagesAndOthersTyping(
       mediaUrl: row.media_url != null ? String(row.media_url) : null,
       mediaKind: row.media_kind != null ? String(row.media_kind) : null,
       createdAt: String(row.created_at),
+      clientId:
+        row.sender_label != null && String(row.sender_label).trim() !== ""
+          ? String(row.sender_label)
+          : null,
     }));
     const othersTyping = Boolean(typRes.rows[0]);
     return { status: "ok", messages, othersTyping };
@@ -423,14 +433,15 @@ export async function postMessage(
     mediaUrl,
     mediaKind,
     createdAt,
+    clientId,
   };
 
   if (useSql()) {
     const db = await dbReady();
     await db.execute({
-      sql: `INSERT INTO messages (id, room_id, body, media_url, media_kind, created_at)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-      args: [id, roomId, body, mediaUrl, mediaKind, createdAt],
+      sql: `INSERT INTO messages (id, room_id, body, media_url, media_kind, created_at, sender_label)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      args: [id, roomId, body, mediaUrl, mediaKind, createdAt, clientId],
     });
     return { ok: true, message: msg };
   }
