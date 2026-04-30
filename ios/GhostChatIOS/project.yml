@@ -32,17 +32,22 @@ targets:
           - GhostChat.xcodeproj
           - "*.xcworkspace"
           - "**/*.example.swift"
+          - GhostChat-Info.plist
+    # Plist explícito: INFOPLIST_KEY_CFBundleURLTypes não entra no bundle com GENERATE_INFOPLIST_FILE.
+    info:
+      path: GhostChat-Info.plist
+      properties:
+        CFBundleURLTypes:
+          - CFBundleTypeRole: Editor
+            CFBundleURLName: ghosth.chat
+            CFBundleURLSchemes:
+              - ghostchat
     settings:
       base:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
         INFOPLIST_KEY_CFBundleDevelopmentRegion: pt-BR
         INFOPLIST_KEY_CFBundleDisplayName: GhostChat
-        INFOPLIST_KEY_CFBundleURLTypes:
-          - CFBundleTypeRole: Editor
-            CFBundleURLName: ghosth.chat
-            CFBundleURLSchemes:
-              - ghostchat
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.entertainment
         INFOPLIST_KEY_LSRequiresIPhoneOS: true
         INFOPLIST_KEY_UIRequiresFullScreen: false

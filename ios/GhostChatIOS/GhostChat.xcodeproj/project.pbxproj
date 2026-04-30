@@ -194,9 +194,9 @@
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = WSGT97CB7E;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "GhostChat-Info.plist";
 				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
 				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
-				INFOPLIST_KEY_CFBundleURLTypes = "[[\"CFBundleURLSchemes\": [\"ghostchat\"], \"CFBundleTypeRole\": \"Editor\", \"CFBundleURLName\": \"ghosth.chat\"]]";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -348,9 +348,9 @@
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = WSGT97CB7E;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "GhostChat-Info.plist";
 				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
 				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
-				INFOPLIST_KEY_CFBundleURLTypes = "[[\"CFBundleURLSchemes\": [\"ghostchat\"], \"CFBundleTypeRole\": \"Editor\", \"CFBundleURLName\": \"ghosth.chat\"]]";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

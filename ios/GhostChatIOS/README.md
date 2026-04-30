@@ -5,7 +5,7 @@ MVP nativo iOS alinhado ao **layout e cores da versão web** (`#0d0d1a`, roxo, h
 ## Escopo desta versão
 
 - Criar sala (`POST /api/rooms/ios` com segredo no header)
-- Entrar em sala por ID
+- Abrir sala por **Universal Link** (`https://ghosth.chat/c/...`) ou **URL scheme** (`ghostchat://c/...`); na home, lista de salas recentes válidas
 - Chat de texto + fotos
 - Indicador de digitação
 - Encerrar conversa
@@ -28,6 +28,11 @@ O endpoint `POST /api/rooms/ios` é **HTTPS público**: o servidor exige o mesmo
 Opcional: `Config/Secrets.local.xcconfig` (gitignored) para outras definições; o Info.plist gerado **não** embute chaves custom fiáveis só com `INFOPLIST_KEY_*` — por isso o Swift acima é o caminho estável.
 
 Depois de alterar `project.yml`, corre `xcodegen generate` antes do Archive.
+
+### Deep links (Xcode e TestFlight)
+
+- **`ghostchat://c/{id}`** — funciona em **Debug (Xcode)** e **TestFlight/App Store** desde que o `Info.plist` declare `CFBundleURLTypes` (gerado em `GhostChat-Info.plist` via XcodeGen).
+- **`https://ghosth.chat/c/{id}`** — Universal Link: precisa de **Associated Domains** no App ID + AASA no site (já exposto). Comportamento é o mesmo em Xcode ou TestFlight **se o perfil de assinatura incluir o entitlement**.
 
 ## Abrir o projeto
 
