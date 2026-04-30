@@ -91,6 +91,7 @@ export function RoomChat({ roomId }: { roomId: string }) {
   }, []);
 
   const relativePath = `/c/${encodeURIComponent(roomId)}`;
+  const appDeepLink = `ghostchat://c/${encodeURIComponent(roomId)}`;
   /** Mesmo texto no SSR e no 1º paint do cliente — URL completa só após mount */
   const [shareUrl, setShareUrl] = useState(relativePath);
 
@@ -398,6 +399,12 @@ export function RoomChat({ roomId }: { roomId: string }) {
           convidado). Conversa privada; não há perfil público nem lista de contactos.
         </p>
         <p className="mt-2 break-words break-all text-xs opacity-70">{shareUrl}</p>
+        <a
+          href={appDeepLink}
+          className="mt-2 inline-flex rounded-lg border border-[#c4b0e8]/35 px-3 py-1.5 text-xs font-semibold text-[#f5f0ff] hover:bg-white/10"
+        >
+          Abrir no app
+        </a>
         <p className="mt-2 break-words text-xs opacity-80">
           {expiresAtMs == null || now == null
             ? "Sincronizando com o servidor…"
