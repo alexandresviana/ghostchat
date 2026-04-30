@@ -1,0 +1,17 @@
+---
+description: Preserva identidade do app iOS (bundle e nome) no GhostChat
+globs: ios/GhostChatIOS/**/*
+alwaysApply: false
+---
+
+# iOS — bundle e nome do app
+
+Valores **canónicos** (não alterar sem pedido explícito do autor):
+
+- **Bundle ID:** `com.ghosthchat`
+- **Nome no ecrã inicial:** `GhostChat` (`INFOPLIST_KEY_CFBundleDisplayName`)
+- **Alvo / produto:** `GhostChat` (target Xcode)
+
+A fonte de verdade para regenerar o `.xcodeproj` é **`ios/GhostChatIOS/project.yml`**. Depois de editar o YAML, corre `xcodegen generate` nessa pasta.
+
+**Não** fazer `git restore` no `project.pbxproj` para “limpar” um commit: isso repõe versões antigas do bundle/nome. Se o XcodeGen estiver desatualizado, **atualiza o `project.yml`** e regenera; não sobrescrever identidade à mão com valores genéricos (`com.ghosth.chat`, `com.ghostchat.ios`, `GhostChatOS`, etc.).

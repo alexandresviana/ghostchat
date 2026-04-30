@@ -1,14 +1,18 @@
-name: GhostChatIOS
+# Fonte de identidade do app (bundle, nome do alvo). Após editar: `xcodegen generate`
+# Valores canónicos: bundle `com.ghosthchat`, nome no ecrã inicial GhostChat (CFBundleDisplayName).
+name: GhostChat
 options:
   minimumXcodeGenVersion: 2.38.0
 settings:
   base:
-    PRODUCT_BUNDLE_IDENTIFIER: com.ghostchat.ios
+    PRODUCT_BUNDLE_IDENTIFIER: com.ghosthchat
     SWIFT_VERSION: 5.9
     IPHONEOS_DEPLOYMENT_TARGET: 17.0
 targets:
-  GhostChatIOS:
+  GhostChat:
     type: application
+    # Gera esquema partilhado `GhostChat` em xcshareddata (CI / clone limpo)
+    scheme: {}
     platform: iOS
     deploymentTarget: "17.0"
     sources:
@@ -27,11 +31,14 @@ targets:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
         INFOPLIST_KEY_CFBundleDevelopmentRegion: pt-BR
         INFOPLIST_KEY_CFBundleDisplayName: GhostChat
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.entertainment
         INFOPLIST_KEY_LSRequiresIPhoneOS: true
         INFOPLIST_KEY_UIRequiresFullScreen: false
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
         INFOPLIST_KEY_UILaunchScreen_Generation: true
-        DEVELOPMENT_TEAM: ""
+        DEVELOPMENT_TEAM: WSGT97CB7E
         GENERATE_INFOPLIST_FILE: true
         TARGETED_DEVICE_FAMILY: "1,2"
+        MARKETING_VERSION: "1"
+        CURRENT_PROJECT_VERSION: "3"

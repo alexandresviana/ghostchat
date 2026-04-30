@@ -7,165 +7,155 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B1954140541E6D9AF68F16B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D005479BB707526E499389D /* HomeView.swift */; };
-		12DC377D7E82D5955299C570 /* RootShellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3D8A23BC7706000A067A02 /* RootShellView.swift */; };
-		9407B7363ACA2314B9709C2B /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A3AB1E6C98D124A5D8ECE4 /* ChatViewModel.swift */; };
-		993B63EDB613FFB9FF8B5E58 /* RoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB472C419FFA10B43F3BF507 /* RoomView.swift */; };
-		9CF90E169ACC2B6136D81FC0 /* GhostChatIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76B21D5DBC0A3FA3338D86EB /* GhostChatIOSApp.swift */; };
-		A1C3E83E150AE493BAE8C301 /* GhostTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173A6D117CC13378C1E8E86B /* GhostTheme.swift */; };
-		BB88AA990011223344556601 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA77BB880011223344556601 /* Assets.xcassets */; };
-		D5FA0DB9B889167B06D0A715 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2B4BA8980D8C75579DCC36 /* Models.swift */; };
-		DD1188220011223344556621 /* SensitiveContentShield.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1188110011223344556620 /* SensitiveContentShield.swift */; };
-		EB1AB115EA98D224A7044C59 /* EntrySplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6616C74063EC26FED49EB5EA /* EntrySplashView.swift */; };
-		EF11EE220011223344556631 /* GhostWipeOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF11EE110011223344556630 /* GhostWipeOverlayView.swift */; };
-		FDCA74E6A96F0CC57FF57C12 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69382311451A15AF87500883 /* APIClient.swift */; };
-		FF00AA220011223344556621 /* ScreenRecordingShield.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF00AA110011223344556620 /* ScreenRecordingShield.swift */; };
+		02678E40763E42F41087BC6E /* GhostTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EF9839948B91E2F3CBA8D5 /* GhostTheme.swift */; };
+		26D4D17124FC9683C3EFA42F /* RoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895AC31CCD19848CCC9C2F13 /* RoomView.swift */; };
+		336C70D48336C5C0408B7822 /* GhostChatIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BDF2E870F9E0EBB09B078FF /* GhostChatIOSApp.swift */; };
+		33B3B4971DBF92D785D9D06F /* RootShellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02169C13F08BB46C5EC4F16 /* RootShellView.swift */; };
+		555A1248C157D4954991D203 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A08B12B4B7A2A30E6608AE /* HomeView.swift */; };
+		5624E4BD79AA6FAAA2022FF0 /* GhostWipeOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1332DD245D62D1BFFF440F5D /* GhostWipeOverlayView.swift */; };
+		66831C04CEBC8B0EC47E78C7 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB26AC565D1C6B0F7EBA86E /* APIClient.swift */; };
+		A4787E7A2397640158B5D058 /* ScreenRecordingShield.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2E62069E5AC4225A748CA1 /* ScreenRecordingShield.swift */; };
+		C75E780D9A4358A261703CB8 /* EntrySplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E9AD0D17425FA9499EAC78 /* EntrySplashView.swift */; };
+		D290DB62FE2B3B516C8AF552 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF13ADC074DA7B71D46BA9F /* ChatViewModel.swift */; };
+		ECEA207CC7B1EDED0CA40930 /* SensitiveContentShield.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997BDD9E659FA33AEA648E9 /* SensitiveContentShield.swift */; };
+		FA83FE327BDEC61B4ABE3CF9 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 467F835A0F161795325B1453 /* Models.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0D005479BB707526E499389D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		173A6D117CC13378C1E8E86B /* GhostTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTheme.swift; sourceTree = "<group>"; };
-		2E2B4BA8980D8C75579DCC36 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		533AB1CEE49FD5EF7CDF120B /* GhostChatOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GhostChatOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		64A3AB1E6C98D124A5D8ECE4 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
-		6616C74063EC26FED49EB5EA /* EntrySplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntrySplashView.swift; sourceTree = "<group>"; };
-		69382311451A15AF87500883 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
-		76B21D5DBC0A3FA3338D86EB /* GhostChatIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostChatIOSApp.swift; sourceTree = "<group>"; };
-		AA77BB880011223344556601 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		AC3D8A23BC7706000A067A02 /* RootShellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootShellView.swift; sourceTree = "<group>"; };
-		DD1188110011223344556620 /* SensitiveContentShield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitiveContentShield.swift; sourceTree = "<group>"; };
-		EF11EE110011223344556630 /* GhostWipeOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostWipeOverlayView.swift; sourceTree = "<group>"; };
-		FB472C419FFA10B43F3BF507 /* RoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
-		FF00AA110011223344556620 /* ScreenRecordingShield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingShield.swift; sourceTree = "<group>"; };
+		0C2E62069E5AC4225A748CA1 /* ScreenRecordingShield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingShield.swift; sourceTree = "<group>"; };
+		1332DD245D62D1BFFF440F5D /* GhostWipeOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostWipeOverlayView.swift; sourceTree = "<group>"; };
+		1953330F4F52BD0467D19E9B /* GhostChat.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GhostChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EF13ADC074DA7B71D46BA9F /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		34E9AD0D17425FA9499EAC78 /* EntrySplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntrySplashView.swift; sourceTree = "<group>"; };
+		44A08B12B4B7A2A30E6608AE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		467F835A0F161795325B1453 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		49EF9839948B91E2F3CBA8D5 /* GhostTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTheme.swift; sourceTree = "<group>"; };
+		6BDF2E870F9E0EBB09B078FF /* GhostChatIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostChatIOSApp.swift; sourceTree = "<group>"; };
+		895AC31CCD19848CCC9C2F13 /* RoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
+		8AB26AC565D1C6B0F7EBA86E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		B02169C13F08BB46C5EC4F16 /* RootShellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootShellView.swift; sourceTree = "<group>"; };
+		F997BDD9E659FA33AEA648E9 /* SensitiveContentShield.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensitiveContentShield.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		2E200F95A573A02A094964B0 /* GhostChatIOS */ = {
+		55B83C4CD4129964137FD366 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				69382311451A15AF87500883 /* APIClient.swift */,
-				64A3AB1E6C98D124A5D8ECE4 /* ChatViewModel.swift */,
-				6616C74063EC26FED49EB5EA /* EntrySplashView.swift */,
-				76B21D5DBC0A3FA3338D86EB /* GhostChatIOSApp.swift */,
-				173A6D117CC13378C1E8E86B /* GhostTheme.swift */,
-				EF11EE110011223344556630 /* GhostWipeOverlayView.swift */,
-				0D005479BB707526E499389D /* HomeView.swift */,
-				2E2B4BA8980D8C75579DCC36 /* Models.swift */,
-				FB472C419FFA10B43F3BF507 /* RoomView.swift */,
-				DD1188110011223344556620 /* SensitiveContentShield.swift */,
-				FF00AA110011223344556620 /* ScreenRecordingShield.swift */,
-				AC3D8A23BC7706000A067A02 /* RootShellView.swift */,
-				AA77BB880011223344556601 /* Assets.xcassets */,
+				1953330F4F52BD0467D19E9B /* GhostChat.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B8E0533865F9BDF86CDCCF3A = {
+			isa = PBXGroup;
+			children = (
+				EC9E4F745423B5CB6E5AD19B /* GhostChatIOS */,
+				55B83C4CD4129964137FD366 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		EC9E4F745423B5CB6E5AD19B /* GhostChatIOS */ = {
+			isa = PBXGroup;
+			children = (
+				8AB26AC565D1C6B0F7EBA86E /* APIClient.swift */,
+				2EF13ADC074DA7B71D46BA9F /* ChatViewModel.swift */,
+				34E9AD0D17425FA9499EAC78 /* EntrySplashView.swift */,
+				6BDF2E870F9E0EBB09B078FF /* GhostChatIOSApp.swift */,
+				49EF9839948B91E2F3CBA8D5 /* GhostTheme.swift */,
+				1332DD245D62D1BFFF440F5D /* GhostWipeOverlayView.swift */,
+				44A08B12B4B7A2A30E6608AE /* HomeView.swift */,
+				467F835A0F161795325B1453 /* Models.swift */,
+				895AC31CCD19848CCC9C2F13 /* RoomView.swift */,
+				B02169C13F08BB46C5EC4F16 /* RootShellView.swift */,
+				0C2E62069E5AC4225A748CA1 /* ScreenRecordingShield.swift */,
+				F997BDD9E659FA33AEA648E9 /* SensitiveContentShield.swift */,
 			);
 			name = GhostChatIOS;
 			path = .;
 			sourceTree = "<group>";
 		};
-		571C0D3D4C2EE1037B2F35A6 = {
-			isa = PBXGroup;
-			children = (
-				2E200F95A573A02A094964B0 /* GhostChatIOS */,
-				A19C525C7639115CBDC19C05 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		A19C525C7639115CBDC19C05 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				533AB1CEE49FD5EF7CDF120B /* GhostChatOS.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C72E1E5662731464EE2A873B /* GhostChatOS */ = {
+		591205D6B972BC64E1BDE234 /* GhostChat */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9B1F3D870F17542FBEF78E54 /* Build configuration list for PBXNativeTarget "GhostChatOS" */;
+			buildConfigurationList = C5F2AA7422595411672CF936 /* Build configuration list for PBXNativeTarget "GhostChat" */;
 			buildPhases = (
-				DE5B36C06C95AD6DA6B30A25 /* Resources */,
-				7EDC6260EDCF002F8FCDFCDA /* Sources */,
+				1C09913FF12CC0BD10FF83D4 /* Sources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = GhostChatOS;
+			name = GhostChat;
 			packageProductDependencies = (
 			);
-			productName = GhostChatIOS;
-			productReference = 533AB1CEE49FD5EF7CDF120B /* GhostChatOS.app */;
+			productName = GhostChat;
+			productReference = 1953330F4F52BD0467D19E9B /* GhostChat.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		372F48FD8C5E7E2F665CFE34 /* Project object */ = {
+		CAB8823E36C467720F8BC113 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					591205D6B972BC64E1BDE234 = {
+						DevelopmentTeam = WSGT97CB7E;
+					};
+				};
 			};
-			buildConfigurationList = F556F8A89755AC0CECA51F01 /* Build configuration list for PBXProject "GhostChat" */;
+			buildConfigurationList = 5375EE9E6B19812F96CAE53D /* Build configuration list for PBXProject "GhostChat" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
 				en,
 			);
-			mainGroup = 571C0D3D4C2EE1037B2F35A6;
+			mainGroup = B8E0533865F9BDF86CDCCF3A;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = A19C525C7639115CBDC19C05 /* Products */;
+			productRefGroup = 55B83C4CD4129964137FD366 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C72E1E5662731464EE2A873B /* GhostChatOS */,
+				591205D6B972BC64E1BDE234 /* GhostChat */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		DE5B36C06C95AD6DA6B30A25 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BB88AA990011223344556601 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		7EDC6260EDCF002F8FCDFCDA /* Sources */ = {
+		1C09913FF12CC0BD10FF83D4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FDCA74E6A96F0CC57FF57C12 /* APIClient.swift in Sources */,
-				9407B7363ACA2314B9709C2B /* ChatViewModel.swift in Sources */,
-				EB1AB115EA98D224A7044C59 /* EntrySplashView.swift in Sources */,
-				9CF90E169ACC2B6136D81FC0 /* GhostChatIOSApp.swift in Sources */,
-				A1C3E83E150AE493BAE8C301 /* GhostTheme.swift in Sources */,
-				EF11EE220011223344556631 /* GhostWipeOverlayView.swift in Sources */,
-				0B1954140541E6D9AF68F16B /* HomeView.swift in Sources */,
-				D5FA0DB9B889167B06D0A715 /* Models.swift in Sources */,
-				993B63EDB613FFB9FF8B5E58 /* RoomView.swift in Sources */,
-				DD1188220011223344556621 /* SensitiveContentShield.swift in Sources */,
-				FF00AA220011223344556621 /* ScreenRecordingShield.swift in Sources */,
-				12DC377D7E82D5955299C570 /* RootShellView.swift in Sources */,
+				66831C04CEBC8B0EC47E78C7 /* APIClient.swift in Sources */,
+				D290DB62FE2B3B516C8AF552 /* ChatViewModel.swift in Sources */,
+				C75E780D9A4358A261703CB8 /* EntrySplashView.swift in Sources */,
+				336C70D48336C5C0408B7822 /* GhostChatIOSApp.swift in Sources */,
+				02678E40763E42F41087BC6E /* GhostTheme.swift in Sources */,
+				5624E4BD79AA6FAAA2022FF0 /* GhostWipeOverlayView.swift in Sources */,
+				555A1248C157D4954991D203 /* HomeView.swift in Sources */,
+				FA83FE327BDEC61B4ABE3CF9 /* Models.swift in Sources */,
+				26D4D17124FC9683C3EFA42F /* RoomView.swift in Sources */,
+				33B3B4971DBF92D785D9D06F /* RootShellView.swift in Sources */,
+				A4787E7A2397640158B5D058 /* ScreenRecordingShield.swift in Sources */,
+				ECEA207CC7B1EDED0CA40930 /* SensitiveContentShield.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		3DE274D1ED610650052E9453 /* Debug */ = {
+		42002A861BDDB35B64FDE132 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = WSGT97CB7E;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
@@ -183,44 +173,69 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ghosth.chat;
-				PRODUCT_NAME = GhostChatOS;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		8FD6763A65EC3633AB696FA9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = WSGT97CB7E;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
-				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
-				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIRequiresFullScreen = NO;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ghosth.chat;
-				PRODUCT_NAME = GhostChatOS;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		B0D986903A0A0F624E6C1571 /* Debug */ = {
+		4AD174F98F89202D68100353 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ghosthchat;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		5756A3F6A6A4F77C2C89D4C2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -275,7 +290,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ghostchat.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ghosthchat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -284,85 +299,56 @@
 			};
 			name = Debug;
 		};
-		B63FD6E5BA58BAE0E1C40CB1 /* Release */ = {
+		C506F15222CA1AD0C651EDBE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 3;
+				DEVELOPMENT_TEAM = WSGT97CB7E;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
+				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ghostchat.ios;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1;
 				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Release;
+			name = Debug;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9B1F3D870F17542FBEF78E54 /* Build configuration list for PBXNativeTarget "GhostChatOS" */ = {
+		5375EE9E6B19812F96CAE53D /* Build configuration list for PBXProject "GhostChat" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3DE274D1ED610650052E9453 /* Debug */,
-				8FD6763A65EC3633AB696FA9 /* Release */,
+				5756A3F6A6A4F77C2C89D4C2 /* Debug */,
+				4AD174F98F89202D68100353 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		F556F8A89755AC0CECA51F01 /* Build configuration list for PBXProject "GhostChat" */ = {
+		C5F2AA7422595411672CF936 /* Build configuration list for PBXNativeTarget "GhostChat" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B0D986903A0A0F624E6C1571 /* Debug */,
-				B63FD6E5BA58BAE0E1C40CB1 /* Release */,
+				C506F15222CA1AD0C651EDBE /* Debug */,
+				42002A861BDDB35B64FDE132 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 372F48FD8C5E7E2F665CFE34 /* Project object */;
+	rootObject = CAB8823E36C467720F8BC113 /* Project object */;
 }

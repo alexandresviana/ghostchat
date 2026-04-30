@@ -13,13 +13,19 @@ MVP nativo iOS alinhado ao **layout e cores da versão web** (`#0d0d1a`, roxo, h
 - **Ícone do app** a partir do `public/ghost-logo.svg` (PNG 1024 gerado para o AppIcon)
 - **Launch screen** (`LaunchScreen.storyboard`) com logótipo centrado e fundo `#0d0d1a`
 
+## Identidade do app (fixa)
+
+- **Bundle ID:** `com.ghosthchat`
+- **Nome no ícone / ecrã:** GhostChat (`CFBundleDisplayName`)
+- O ficheiro **`project.yml`** é a fonte de verdade; o `.xcodeproj` gera-se com XcodeGen. Não repor o `project.pbxproj` de versões antigas sem alinhar o YAML.
+
 ## Abrir o projeto
 
 Na raiz `ios/GhostChatIOS/`:
 
 ```bash
 xcodegen generate
-open GhostChatIOS.xcodeproj
+open GhostChat.xcodeproj
 ```
 
 Requisitos: **Xcode 15+**, **iOS 17+**, e **XcodeGen** (`brew install xcodegen`) para regenerar o `.xcodeproj` a partir de `project.yml`.
