@@ -10,7 +10,12 @@ import { createRoom } from "@/lib/room-service";
 export const runtime = "nodejs";
 
 /**
- * Criação de sala só para o app iOS nativo (segredo em header).
+ * Criação de sala para o app iOS nativo.
+ *
+ * O URL HTTPS é público: sem um segredo partilhado, qualquer script poderia criar salas em massa.
+ * Isto não prova que o pedido veio “só do iOS” de forma criptográfica forte (para isso seria App Attest),
+ * mas barra abuso trivial. O segredo no header deve coincidir com `GHOSTCHAT_IOS_API_SECRET` no servidor.
+ *
  * Separado de `POST /api/rooms` (web/painel + pagamento) para evitar confusão e 402 indevidos.
  */
 export async function POST(request: Request) {

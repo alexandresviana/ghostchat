@@ -14,6 +14,6 @@ Valores **canónicos** (não alterar sem pedido explícito do autor):
 
 A fonte de verdade para regenerar o `.xcodeproj` é **`ios/GhostChatIOS/project.yml`**. Depois de editar o YAML, corre `xcodegen generate` nessa pasta.
 
-**Segredo iOS (`GHOSTCHAT_IOS_API_SECRET`):** o valor da Vercel tem de estar na build do app via **`Config/Secrets.local.xcconfig`** (gitignored), não só no Scheme do Xcode — caso contrário TestFlight envia pedidos **sem** header e o servidor devolve 401.
+**Segredo iOS (`GHOSTCHAT_IOS_API_SECRET`):** em Archive/TestFlight, preencher **`GhostChatSecrets.swift`** (`iosApiSecret`) com o mesmo valor que na Vercel. `INFOPLIST_KEY_*` personalizado não embute no Info.plist final de forma fiável; o Scheme só ajuda em Run a partir do Xcode.
 
 **Não** fazer `git restore` no `project.pbxproj` para “limpar” um commit: isso repõe versões antigas do bundle/nome. Se o XcodeGen estiver desatualizado, **atualiza o `project.yml`** e regenera; não sobrescrever identidade à mão com valores genéricos (`com.ghosth.chat`, `com.ghostchat.ios`, `GhostChatOS`, etc.).

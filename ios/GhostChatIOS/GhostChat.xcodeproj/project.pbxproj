@@ -14,8 +14,10 @@
 		555A1248C157D4954991D203 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A08B12B4B7A2A30E6608AE /* HomeView.swift */; };
 		5624E4BD79AA6FAAA2022FF0 /* GhostWipeOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1332DD245D62D1BFFF440F5D /* GhostWipeOverlayView.swift */; };
 		66831C04CEBC8B0EC47E78C7 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB26AC565D1C6B0F7EBA86E /* APIClient.swift */; };
+		A05108C97DD351D65082901C /* GhostChatSecrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C7C6A45B15CCAD735597055 /* GhostChatSecrets.swift */; };
 		A4787E7A2397640158B5D058 /* ScreenRecordingShield.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2E62069E5AC4225A748CA1 /* ScreenRecordingShield.swift */; };
 		C75E780D9A4358A261703CB8 /* EntrySplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E9AD0D17425FA9499EAC78 /* EntrySplashView.swift */; };
+		CAE3C8E997AD985890FAD49C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A5390DCF5FE9F5BDF292D2D /* Assets.xcassets */; };
 		D290DB62FE2B3B516C8AF552 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF13ADC074DA7B71D46BA9F /* ChatViewModel.swift */; };
 		ECEA207CC7B1EDED0CA40930 /* SensitiveContentShield.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997BDD9E659FA33AEA648E9 /* SensitiveContentShield.swift */; };
 		FA83FE327BDEC61B4ABE3CF9 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 467F835A0F161795325B1453 /* Models.swift */; };
@@ -26,11 +28,13 @@
 		0F8F3DDE8CBB88C2DBB56613 /* Secrets.local.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.local.example.xcconfig; sourceTree = "<group>"; };
 		1332DD245D62D1BFFF440F5D /* GhostWipeOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostWipeOverlayView.swift; sourceTree = "<group>"; };
 		1953330F4F52BD0467D19E9B /* GhostChat.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GhostChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C7C6A45B15CCAD735597055 /* GhostChatSecrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostChatSecrets.swift; sourceTree = "<group>"; };
 		2EF13ADC074DA7B71D46BA9F /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		34E9AD0D17425FA9499EAC78 /* EntrySplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntrySplashView.swift; sourceTree = "<group>"; };
 		44A08B12B4B7A2A30E6608AE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		467F835A0F161795325B1453 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		49EF9839948B91E2F3CBA8D5 /* GhostTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTheme.swift; sourceTree = "<group>"; };
+		4A5390DCF5FE9F5BDF292D2D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6BDF2E870F9E0EBB09B078FF /* GhostChatIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostChatIOSApp.swift; sourceTree = "<group>"; };
 		895AC31CCD19848CCC9C2F13 /* RoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
 		8AB26AC565D1C6B0F7EBA86E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
@@ -70,9 +74,11 @@
 			isa = PBXGroup;
 			children = (
 				8AB26AC565D1C6B0F7EBA86E /* APIClient.swift */,
+				4A5390DCF5FE9F5BDF292D2D /* Assets.xcassets */,
 				2EF13ADC074DA7B71D46BA9F /* ChatViewModel.swift */,
 				34E9AD0D17425FA9499EAC78 /* EntrySplashView.swift */,
 				6BDF2E870F9E0EBB09B078FF /* GhostChatIOSApp.swift */,
+				2C7C6A45B15CCAD735597055 /* GhostChatSecrets.swift */,
 				49EF9839948B91E2F3CBA8D5 /* GhostTheme.swift */,
 				1332DD245D62D1BFFF440F5D /* GhostWipeOverlayView.swift */,
 				44A08B12B4B7A2A30E6608AE /* HomeView.swift */,
@@ -95,6 +101,7 @@
 			buildConfigurationList = C5F2AA7422595411672CF936 /* Build configuration list for PBXNativeTarget "GhostChat" */;
 			buildPhases = (
 				1C09913FF12CC0BD10FF83D4 /* Sources */,
+				493E5B3002B0F0FF25D2A101 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -140,6 +147,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		493E5B3002B0F0FF25D2A101 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CAE3C8E997AD985890FAD49C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		1C09913FF12CC0BD10FF83D4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -149,6 +167,7 @@
 				D290DB62FE2B3B516C8AF552 /* ChatViewModel.swift in Sources */,
 				C75E780D9A4358A261703CB8 /* EntrySplashView.swift in Sources */,
 				336C70D48336C5C0408B7822 /* GhostChatIOSApp.swift in Sources */,
+				A05108C97DD351D65082901C /* GhostChatSecrets.swift in Sources */,
 				02678E40763E42F41087BC6E /* GhostTheme.swift in Sources */,
 				5624E4BD79AA6FAAA2022FF0 /* GhostWipeOverlayView.swift in Sources */,
 				555A1248C157D4954991D203 /* HomeView.swift in Sources */,
@@ -174,7 +193,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
 				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
-				INFOPLIST_KEY_GhostChatIosApiSecret = "$(GHOSTCHAT_IOS_API_SECRET)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -327,7 +345,6 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
 				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
-				INFOPLIST_KEY_GhostChatIosApiSecret = "$(GHOSTCHAT_IOS_API_SECRET)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

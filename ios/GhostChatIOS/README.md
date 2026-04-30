@@ -21,13 +21,13 @@ MVP nativo iOS alinhado ao **layout e cores da versão web** (`#0d0d1a`, roxo, h
 
 ## Segredo da API (obrigatório para criar sala em produção)
 
-O servidor espera o mesmo valor que **`GHOSTCHAT_IOS_API_SECRET`** na Vercel. Variáveis só no **Scheme → Run** do Xcode **não** vão para TestFlight/App Store — o binário precisa do segredo na build.
+O endpoint `POST /api/rooms/ios` é **HTTPS público**: o servidor exige o mesmo valor que **`GHOSTCHAT_IOS_API_SECRET`** na Vercel (header) para evitar criação massiva de salas por scripts. Não substitui App Attest, mas é simples de operar.
 
-1. Copia `Config/Secrets.local.example.xcconfig` para **`Config/Secrets.local.xcconfig`** (este ficheiro está no `.gitignore`).
-2. Edita uma linha: `GHOSTCHAT_IOS_API_SECRET = ` o mesmo segredo da Vercel, **sem aspas** e sem espaços extra.
-3. Na pasta `ios/GhostChatIOS/`: `xcodegen generate` e volta a fazer **Archive** / enviar build.
+**Método recomendado (TestFlight / App Store):** edita **`GhostChatSecrets.swift`** e preenche `iosApiSecret` com o **mesmo** texto que na Vercel (string literal, sem aspas extra). Variáveis só no **Scheme → Run** não vão no binário de distribuição.
 
-Em CI, gera `Secrets.local.xcconfig` a partir de um segredo armazenado no pipeline antes do `xcodebuild`, ou exporta `GHOSTCHAT_IOS_API_SECRET` no ambiente do `xcodebuild` (o Info.plist usa `$(GHOSTCHAT_IOS_API_SECRET)`).
+Opcional: `Config/Secrets.local.xcconfig` (gitignored) para outras definições; o Info.plist gerado **não** embute chaves custom fiáveis só com `INFOPLIST_KEY_*` — por isso o Swift acima é o caminho estável.
+
+Depois de alterar `project.yml`, corre `xcodegen generate` antes do Archive.
 
 ## Abrir o projeto
 
@@ -48,4 +48,4 @@ Fixo em código: `ChatViewModel.backendBaseURLString` (HTTPS de produção).
 
 - O app não mostra PIX nem ecrã de planos.
 - Criar sala depende das regras do servidor (ex.: 402 se não houver entitlement).
-- Ícones/registo: o `AppIcon` usa imagem **1024×1024** gerada a partir do mesmo SVG da web; para publicar na App Store, confirme no Xcode **Assets** se o conjunto de ícones está válido para a build alvo.
+- Ícones/registo: o `AppIcon` usa imagem **1024×1024** gerada a partir do mesmo SVG da web; para publicar na App Store, confirme no Xcode **Assets** se o conjunto de ícones está válido para a build alvo. Depois de alterar `project.yml`, corra `xcodegen generate` para o `Assets.xcassets` continuar referenciado no alvo (sem isso o bundle pode sair sem ícone).

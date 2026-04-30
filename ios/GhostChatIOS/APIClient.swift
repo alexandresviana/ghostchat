@@ -2,9 +2,10 @@ import Foundation
 
 /// Mesmo valor que `GHOSTCHAT_IOS_API_SECRET` no servidor (Vercel).
 ///
-/// Ordem: (1) variáveis do ambiente do processo — **só** ao correr pelo Xcode com Scheme → Run → Environment;
-/// (2) `GhostChatIosApiSecret` no Info.plist, injetado em **Archive** via `Config/Secrets.xcconfig` (ver README);
-/// (3) `inlineReleaseSecret` — último recurso, não usar em repos públicos.
+/// Ordem: (1) Scheme → Run → Environment; (2) **`GhostChatSecrets.iosApiSecret`** (Swift — fiável em Archive/TestFlight);
+/// (3) Info.plist `GhostChatIosApiSecret` se existir; (4) `inlineReleaseSecret`.
+///
+/// Chaves `INFOPLIST_KEY_*` personalizadas com `GENERATE_INFOPLIST_FILE` costumam **não** aparecer no Info.plist final; usa `GhostChatSecrets.swift`.
 private enum IOSNativeAPISecrets {
     private static let infoPlistKey = "GhostChatIosApiSecret"
     private static let inlineReleaseSecret: String = ""
@@ -15,6 +16,10 @@ private enum IOSNativeAPISecrets {
                !v.isEmpty {
                 return v
             }
+        }
+        let fromSwift = GhostChatSecrets.iosApiSecret.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !fromSwift.isEmpty {
+            return fromSwift
         }
         if let raw = Bundle.main.object(forInfoDictionaryKey: infoPlistKey) as? String {
             let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
