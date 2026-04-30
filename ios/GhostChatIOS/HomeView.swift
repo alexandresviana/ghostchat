@@ -2,8 +2,9 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject private var vm = ChatViewModel()
-    @State private var joinRoomId: String = ""
     @State private var goToRoom = false
+    var deepLinkRoomId: String?
+    var onDeepLinkConsumed: (() -> Void)?
 
     var body: some View {
         ScrollView {
@@ -51,37 +52,58 @@ struct HomeView: View {
                     }
 
                     VStack(spacing: 12) {
-                        Text("Já tem um ID da sala?")
+                        Text("Salas recentes (ainda válidas)")
                             .font(.system(size: 14, weight: .semibold, design: .rounded))
                             .foregroundStyle(GhostTheme.lavender.opacity(0.95))
 
-                        TextField(
-                            "",
-                            text: $joinRoomId,
-                            prompt: Text("ID da sala").foregroundStyle(GhostTheme.lavender.opacity(0.45))
-                        )
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled(true)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                .stroke(GhostTheme.lavender.opacity(0.35), lineWidth: 1)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                        .fill(Color(red: 26 / 255, green: 21 / 255, blue: 48 / 255).opacity(0.55))
-                                )
-                        )
-                        .foregroundStyle(GhostTheme.foreground)
+                        if vm.recentRooms.isEmpty {
+                            GhostTheme.bodyText("Nenhuma sala válida salva neste aparelho ainda.", opacity: 0.58)
+                                .font(.system(size: 13, weight: .regular, design: .rounded))
+                        } else {
+                            VStack(spacing: 8) {
+                                ForEach(vm.recentRooms) { room in
+                                    HStack(spacing: 10) {
+                                        Button {
+                                            vm.roomId = room.id
+                                            goToRoom = true
+                                        } label: {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(room.id)
+                                                    .font(.system(size: 13, weight: .semibold, design: .rounded))
+                                                    .foregroundStyle(GhostTheme.foreground)
+                                                    .lineLimit(1)
+                                                if let exp = room.expiresAt {
+                                                    Text("Válida até \(exp.formatted(date: .abbreviated, time: .shortened))")
+                                                        .font(.system(size: 11, weight: .regular, design: .rounded))
+                                                        .foregroundStyle(GhostTheme.lavender.opacity(0.7))
+                                                }
+                                            }
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        }
+                                        .buttonStyle(.plain)
 
-                        Button("Entrar na sala") {
-                            vm.roomId = joinRoomId
-                            goToRoom = true
+                                        Button(role: .destructive) {
+                                            vm.removeRecentRoom(room.id)
+                                        } label: {
+                                            Image(systemName: "trash")
+                                                .font(.system(size: 12, weight: .bold))
+                                        }
+                                        .buttonStyle(.borderless)
+                                        .foregroundStyle(Color.red.opacity(0.85))
+                                    }
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 10)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                            .stroke(GhostTheme.lavender.opacity(0.28), lineWidth: 1)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                                    .fill(Color(red: 26 / 255, green: 21 / 255, blue: 48 / 255).opacity(0.45))
+                                            )
+                                    )
+                                }
+                            }
                         }
-                        .buttonStyle(.borderless)
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundStyle(GhostTheme.mint)
-                        .disabled(joinRoomId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     }
 
                     if let err = vm.errorMessage {
@@ -109,5 +131,20 @@ struct HomeView: View {
                 goToRoom = true
             }
         }
+        .onAppear {
+            consumeDeepLinkIfNeeded(deepLinkRoomId)
+        }
+        .onChange(of: deepLinkRoomId) { _, newValue in
+            consumeDeepLinkIfNeeded(newValue)
+        }
+    }
+
+    private func consumeDeepLinkIfNeeded(_ maybeRoomId: String?) {
+        guard let roomId = maybeRoomId?.trimmingCharacters(in: .whitespacesAndNewlines), !roomId.isEmpty else {
+            return
+        }
+        vm.roomId = roomId
+        goToRoom = true
+        onDeepLinkConsumed?()
     }
 }

@@ -48,3 +48,14 @@ struct GenericOKResponse: Codable {
     let ok: Bool
 }
 
+struct RecentRoom: Codable, Identifiable, Hashable {
+    let id: String
+    let expiresAt: Date?
+    let lastOpenedAt: Date
+
+    var isValidNow: Bool {
+        guard let expiresAt else { return true }
+        return expiresAt > Date()
+    }
+}
+

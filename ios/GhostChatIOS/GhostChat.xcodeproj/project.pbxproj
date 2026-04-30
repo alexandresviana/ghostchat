@@ -35,6 +35,7 @@
 		467F835A0F161795325B1453 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		49EF9839948B91E2F3CBA8D5 /* GhostTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTheme.swift; sourceTree = "<group>"; };
 		4A5390DCF5FE9F5BDF292D2D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5A7264B5D5515269E7353EB7 /* GhostChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GhostChat.entitlements; sourceTree = "<group>"; };
 		6BDF2E870F9E0EBB09B078FF /* GhostChatIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostChatIOSApp.swift; sourceTree = "<group>"; };
 		895AC31CCD19848CCC9C2F13 /* RoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
 		8AB26AC565D1C6B0F7EBA86E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 				4A5390DCF5FE9F5BDF292D2D /* Assets.xcassets */,
 				2EF13ADC074DA7B71D46BA9F /* ChatViewModel.swift */,
 				34E9AD0D17425FA9499EAC78 /* EntrySplashView.swift */,
+				5A7264B5D5515269E7353EB7 /* GhostChat.entitlements */,
 				6BDF2E870F9E0EBB09B078FF /* GhostChatIOSApp.swift */,
 				2C7C6A45B15CCAD735597055 /* GhostChatSecrets.swift */,
 				49EF9839948B91E2F3CBA8D5 /* GhostTheme.swift */,
@@ -187,12 +189,14 @@
 			baseConfigurationReference = CD03C330DC1762D2F93EEE7A /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GhostChat.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = WSGT97CB7E;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
 				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
+				INFOPLIST_KEY_CFBundleURLTypes = "[[\"CFBundleURLSchemes\": [\"ghostchat\"], \"CFBundleTypeRole\": \"Editor\", \"CFBundleURLName\": \"ghosth.chat\"]]";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -339,12 +343,14 @@
 			baseConfigurationReference = CD03C330DC1762D2F93EEE7A /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = GhostChat.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = WSGT97CB7E;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDevelopmentRegion = "pt-BR";
 				INFOPLIST_KEY_CFBundleDisplayName = GhostChat;
+				INFOPLIST_KEY_CFBundleURLTypes = "[[\"CFBundleURLSchemes\": [\"ghostchat\"], \"CFBundleTypeRole\": \"Editor\", \"CFBundleURLName\": \"ghosth.chat\"]]";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_LSRequiresIPhoneOS = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

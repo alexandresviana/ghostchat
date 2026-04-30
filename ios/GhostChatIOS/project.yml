@@ -38,6 +38,11 @@ targets:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
         INFOPLIST_KEY_CFBundleDevelopmentRegion: pt-BR
         INFOPLIST_KEY_CFBundleDisplayName: GhostChat
+        INFOPLIST_KEY_CFBundleURLTypes:
+          - CFBundleTypeRole: Editor
+            CFBundleURLName: ghosth.chat
+            CFBundleURLSchemes:
+              - ghostchat
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.entertainment
         INFOPLIST_KEY_LSRequiresIPhoneOS: true
         INFOPLIST_KEY_UIRequiresFullScreen: false
@@ -49,3 +54,8 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         MARKETING_VERSION: "1"
         CURRENT_PROJECT_VERSION: "3"
+    entitlements:
+      path: GhostChat.entitlements
+      properties:
+        com.apple.developer.associated-domains:
+          - applinks:ghosth.chat

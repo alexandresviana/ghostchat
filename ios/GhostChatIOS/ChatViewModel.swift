@@ -14,11 +14,13 @@ final class ChatViewModel: ObservableObject {
     @Published var ended: Bool = false
     @Published var wiping: Bool = false
     @Published var errorMessage: String?
+    @Published var recentRooms: [RecentRoom] = []
 
     let clientId: String
     private var pollTask: Task<Void, Never>?
     private var hadSuccessfulRoomLoad = false
     private var roomExpiresAt: Date?
+    private let recentRoomsKey = "ghostchat.recentRooms.v1"
 
     init() {
         let key = "ghostchat.clientId"
@@ -29,6 +31,8 @@ final class ChatViewModel: ObservableObject {
             UserDefaults.standard.set(generated, forKey: key)
             self.clientId = generated
         }
+        self.recentRooms = loadRecentRooms().filter(\.isValidNow)
+        saveRecentRooms()
     }
 
     func createRoom() async {
@@ -40,6 +44,7 @@ final class ChatViewModel: ObservableObject {
             self.ended = false
             self.wiping = false
             self.errorMessage = nil
+            self.recordRecentRoom(id: room.id, expiresAtISO: room.expiresAt)
         }
     }
 
@@ -137,6 +142,7 @@ final class ChatViewModel: ObservableObject {
     private func startRoom(client: APIClient) async throws {
         let info = try await client.roomInfo(roomId: roomId)
         roomExpiresAt = parseExpiresAt(info.room.expiresAt)
+        recordRecentRoom(id: info.room.id, expiresAtISO: info.room.expiresAt)
         errorMessage = nil
         ended = false
         wiping = false
@@ -188,6 +194,44 @@ final class ChatViewModel: ObservableObject {
             try await operation(client)
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+
+    func removeRecentRoom(_ roomId: String) {
+        recentRooms.removeAll { $0.id == roomId }
+        saveRecentRooms()
+    }
+
+    private func recordRecentRoom(id: String, expiresAtISO: String?) {
+        let trimmed = id.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        let expires = parseExpiresAt(expiresAtISO)
+
+        recentRooms.removeAll { $0.id == trimmed }
+        recentRooms.insert(
+            RecentRoom(id: trimmed, expiresAt: expires, lastOpenedAt: Date()),
+            at: 0
+        )
+        recentRooms = recentRooms.filter(\.isValidNow)
+        if recentRooms.count > 20 {
+            recentRooms = Array(recentRooms.prefix(20))
+        }
+        saveRecentRooms()
+    }
+
+    private func loadRecentRooms() -> [RecentRoom] {
+        guard
+            let data = UserDefaults.standard.data(forKey: recentRoomsKey),
+            let decoded = try? JSONDecoder().decode([RecentRoom].self, from: data)
+        else {
+            return []
+        }
+        return decoded.sorted { $0.lastOpenedAt > $1.lastOpenedAt }
+    }
+
+    private func saveRecentRooms() {
+        if let encoded = try? JSONEncoder().encode(recentRooms) {
+            UserDefaults.standard.set(encoded, forKey: recentRoomsKey)
         }
     }
 }
