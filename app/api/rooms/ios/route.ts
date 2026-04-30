@@ -30,11 +30,23 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!sentCredential || sentCredential !== expectedSecret) {
+  if (!sentCredential) {
     return NextResponse.json(
       {
-        error: "Credencial do app inválida ou em falta.",
-        code: "IOS_AUTH_FAILED",
+        error:
+          "O app não enviou credencial (header em falta). Configure o segredo na build iOS (Info.plist via Secrets.xcconfig) igual a GHOSTCHAT_IOS_API_SECRET na Vercel.",
+        code: "IOS_CREDENTIAL_MISSING",
+      },
+      { status: 401 },
+    );
+  }
+
+  if (sentCredential !== expectedSecret) {
+    return NextResponse.json(
+      {
+        error:
+          "Credencial não coincide com o servidor. Confirme o mesmo valor em GHOSTCHAT_IOS_API_SECRET (Vercel) e na build iOS (Secrets.local.xcconfig), sem aspas nem espaços a mais.",
+        code: "IOS_CREDENTIAL_MISMATCH",
       },
       { status: 401 },
     );

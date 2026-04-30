@@ -19,6 +19,16 @@ MVP nativo iOS alinhado ao **layout e cores da versão web** (`#0d0d1a`, roxo, h
 - **Nome no ícone / ecrã:** GhostChat (`CFBundleDisplayName`)
 - O ficheiro **`project.yml`** é a fonte de verdade; o `.xcodeproj` gera-se com XcodeGen. Não repor o `project.pbxproj` de versões antigas sem alinhar o YAML.
 
+## Segredo da API (obrigatório para criar sala em produção)
+
+O servidor espera o mesmo valor que **`GHOSTCHAT_IOS_API_SECRET`** na Vercel. Variáveis só no **Scheme → Run** do Xcode **não** vão para TestFlight/App Store — o binário precisa do segredo na build.
+
+1. Copia `Config/Secrets.local.example.xcconfig` para **`Config/Secrets.local.xcconfig`** (este ficheiro está no `.gitignore`).
+2. Edita uma linha: `GHOSTCHAT_IOS_API_SECRET = ` o mesmo segredo da Vercel, **sem aspas** e sem espaços extra.
+3. Na pasta `ios/GhostChatIOS/`: `xcodegen generate` e volta a fazer **Archive** / enviar build.
+
+Em CI, gera `Secrets.local.xcconfig` a partir de um segredo armazenado no pipeline antes do `xcodebuild`, ou exporta `GHOSTCHAT_IOS_API_SECRET` no ambiente do `xcodebuild` (o Info.plist usa `$(GHOSTCHAT_IOS_API_SECRET)`).
+
 ## Abrir o projeto
 
 Na raiz `ios/GhostChatIOS/`:

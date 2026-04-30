@@ -1,8 +1,13 @@
 # Fonte de identidade do app (bundle, nome do alvo). Após editar: `xcodegen generate`
 # Valores canónicos: bundle `com.ghosthchat`, nome no ecrã inicial GhostChat (CFBundleDisplayName).
+# Segredo iOS: Config/Secrets.xcconfig + Secrets.local.xcconfig (ver README).
 name: GhostChat
 options:
   minimumXcodeGenVersion: 2.38.0
+# Nível de projeto (não dentro de `options`) — liga Secrets.xcconfig às configs Debug/Release
+configFiles:
+  Debug: Config/Secrets.xcconfig
+  Release: Config/Secrets.xcconfig
 settings:
   base:
     PRODUCT_BUNDLE_IDENTIFIER: com.ghosthchat
@@ -11,6 +16,10 @@ settings:
 targets:
   GhostChat:
     type: application
+    # Garante que o segredo do xcconfig entra nas configs do alvo (Info.plist).
+    configFiles:
+      Debug: Config/Secrets.xcconfig
+      Release: Config/Secrets.xcconfig
     # Gera esquema partilhado `GhostChat` em xcshareddata (CI / clone limpo)
     scheme: {}
     platform: iOS
@@ -42,3 +51,5 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         MARKETING_VERSION: "1"
         CURRENT_PROJECT_VERSION: "3"
+        # Injetado em runtime (Swift lê Bundle); valor vem de Config/Secrets.xcconfig
+        INFOPLIST_KEY_GhostChatIosApiSecret: $(GHOSTCHAT_IOS_API_SECRET)

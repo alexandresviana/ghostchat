@@ -1,9 +1,12 @@
 import Foundation
 
-/// Mesmo valor que `GHOSTCHAT_IOS_API_SECRET` no servidor.
-/// 1) Xcode → Product → Scheme → Edit Scheme → Run → Environment: `GHOSTCHAT_IOS_SECRET` ou `GHOSTCHAT_IOS_API_SECRET`
-/// 2) Ou preencher `inlineReleaseSecret` abaixo só para Release (evitar em repos públicos).
+/// Mesmo valor que `GHOSTCHAT_IOS_API_SECRET` no servidor (Vercel).
+///
+/// Ordem: (1) variáveis do ambiente do processo — **só** ao correr pelo Xcode com Scheme → Run → Environment;
+/// (2) `GhostChatIosApiSecret` no Info.plist, injetado em **Archive** via `Config/Secrets.xcconfig` (ver README);
+/// (3) `inlineReleaseSecret` — último recurso, não usar em repos públicos.
 private enum IOSNativeAPISecrets {
+    private static let infoPlistKey = "GhostChatIosApiSecret"
     private static let inlineReleaseSecret: String = ""
 
     static func resolvedSecret() -> String {
@@ -11,6 +14,12 @@ private enum IOSNativeAPISecrets {
             if let v = ProcessInfo.processInfo.environment[key]?.trimmingCharacters(in: .whitespacesAndNewlines),
                !v.isEmpty {
                 return v
+            }
+        }
+        if let raw = Bundle.main.object(forInfoDictionaryKey: infoPlistKey) as? String {
+            let t = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !t.isEmpty, t != "$(GHOSTCHAT_IOS_API_SECRET)" {
+                return t
             }
         }
         let inline = inlineReleaseSecret.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -213,7 +222,12 @@ final class APIClient {
     /// Cabeçalhos aceitos em `app/api/rooms/ios/route.ts` e rotas `/api/rooms/...` (também `Authorization: Bearer` se o proxy remover o X-*).
     private func applyIosNativeSecret(_ request: inout URLRequest) {
         let trimmed = IOSNativeAPISecrets.resolvedSecret()
-        guard !trimmed.isEmpty else { return }
+        guard !trimmed.isEmpty else {
+            #if DEBUG
+            print("[GhostChat] Segredo iOS em falta: defina Run → Environment ou Config/Secrets.local.xcconfig e faça novo Archive.")
+            #endif
+            return
+        }
         request.setValue(trimmed, forHTTPHeaderField: "X-GhostChat-iOS-Secret")
         request.setValue("Bearer \(trimmed)", forHTTPHeaderField: "Authorization")
     }
